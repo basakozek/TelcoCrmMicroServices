@@ -1,0 +1,92 @@
+version: '3.8'
+
+services:
+ 
+
+#birden fazla node(örneğin kafka) bir arada çalışırken yönetmek için kullan
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.6.1
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181 #kafkanın zookeepera bağlanacağı port
+      ZOOKEEPER_TICK_TIME: 2000 #zookeeper heartbeat interval değeri. kafka ile senkronizasyon
+    ports:
+     - "2181:2181"
+
+  kafka:
+    image: confluentinc/cp-kafka:7.6.1
+    container_name: kafka
+    depends_on:
+      - zookeeper       # kafka başlamadan önce zookeeper container'ı başlamalı
+    ports:
+      - "9092:9092"  # iç (container network) erişim portu
+      - "29092:29092" # Dış (localhost üzerinden) erişim portu
+    
+    environment:
+      KAFKA_BROKER_ID: 1 # kafka broker kimliği - benzersiz id
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+
+      #PLAINTEXT => DOCKER İÇİN NETWORK
+      #PLAINTEXT_HOST => LOCALHOST
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      
+      #KAFKANIN HANGİ ADRESLERDE DİNLEYECEĞİ(LISTENER BINDING)
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: kafka-ui
+    depends_on:
+      - kafka
+    ports:
+      - "8085:8080"
+    environment:
+      - KAFKA_CLUSTERS_0_NAME=LocalCluster
+      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka:9092
+      - KAFKA_CLUSTERS_0_ZOOKEEPER=zookeeper:2181
+      - KAFKA_CLUSTERS_0_READONLY=false
+  
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.15.2
+    container_name: kibana
+    depends_on:
+      - searchservicedb
+    ports:
+      - "5601:5601"
+    environment:
+      - ELASTICSEARCH_HOSTS=http://searchservicedb:9200
+
+  #DB Configuration
+  customerservicedb:
+    container_name: customerservicedb
+    image: postgres
+    ports:
+      - "5450:5432"
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=123456
+      - POSTGRES_DB=customerdb
+    volumes:
+      - "customer-data:/var/lib/postgresql/data"
+
+  searchservicedb:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.15.2
+    container_name: searchservicedb
+    environment:
+      - discovery.type=single-node #tek node modunda çalıştır
+      - xpack.security.enabled=false #güvenlik kapalı
+      - ES_JAVA_OPTS=-Xms1g -Xms1g #java heap ayarları
+    ports:
+      - "9200:9200" #rest api portu
+      - "9300:9300" #cluster içi iletişim portu
+
+
+
+
+
+volumes:
+  customer-data:
