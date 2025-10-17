@@ -6,4 +6,4 @@ This project is part of the Etiya10 training program.
 - Java / Spring Boot
 - PostgreSQL
 - Kafka
-- Podman
+- Docker
