@@ -7,4 +7,3 @@ This project is part of the Etiya10 training program.
 - PostgreSQL
 - Kafka
 - Docker
-selam
