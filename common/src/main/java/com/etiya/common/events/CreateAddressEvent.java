@@ -1,5 +1,9 @@
 package com.etiya.common.events;
 
+import jakarta.persistence.Column;
+
+import java.time.LocalDateTime;
+
 public record CreateAddressEvent(
         String customerId,
         int id,
@@ -10,6 +14,9 @@ public record CreateAddressEvent(
         int districtId,
         String districtName,
         int cityId,
-        String cityName
+        String cityName,
+        String createdDate,
+        String updatedDate,
+        String deletedDate
 ) {
 }

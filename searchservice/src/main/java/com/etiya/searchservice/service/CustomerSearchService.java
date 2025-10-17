@@ -23,6 +23,7 @@ public interface CustomerSearchService {
     void addAddress(String customerId, Address address);
     void updateAddress(String customerId, Address address);
     void deleteAddress(String customerId, int addressId);
+    void softDeleteAddress(String customerId, int addressId,String updatedDate,String deletedDate);
 
     // ContactMedium ops
     void addContactMedium(String customerId, ContactMedium contact);

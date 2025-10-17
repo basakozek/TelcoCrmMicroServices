@@ -1,5 +1,7 @@
 package com.etiya.searchservice.domain;
 
+import com.etiya.common.entities.BaseEntity;
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,4 +23,7 @@ public class Address {
     private String districtName;
     private int cityId;
     private String cityName;
+    private String createdDate;
+    private String updatedDate;
+    private String deletedDate;
 }

@@ -2,6 +2,7 @@ package com.etiya.customerservice.service.concretes;
 
 import com.etiya.common.events.CreateAddressEvent;
 import com.etiya.common.events.DeleteAddressEvent;
+import com.etiya.common.events.SoftDeleteAddressEvent;
 import com.etiya.common.events.UpdateAddressEvent;
 import com.etiya.customerservice.domain.entities.Address;
 import com.etiya.customerservice.domain.entities.Customer;
@@ -18,6 +19,7 @@ import com.etiya.customerservice.service.responses.address.UpdatedAddressRespons
 import com.etiya.customerservice.service.rules.AddressBusinessRules;
 import com.etiya.customerservice.transport.kafka.producer.customer.CreateAddressProducer;
 import com.etiya.customerservice.transport.kafka.producer.customer.DeleteAddressProducer;
+import com.etiya.customerservice.transport.kafka.producer.customer.SoftDeleteAddressProducer;
 import com.etiya.customerservice.transport.kafka.producer.customer.UpdateAddressProducer;
 import jakarta.persistence.EntityManager;
 import org.springframework.stereotype.Service;
@@ -35,14 +37,16 @@ public class AddressServiceImpl implements AddressService {
     public final CreateAddressProducer createAddressProducer;
     public final UpdateAddressProducer updateAddressProducer;
     public final DeleteAddressProducer deleteAddressProducer;
+    public final SoftDeleteAddressProducer softDeleteAddressProducer;
 
-    public AddressServiceImpl(EntityManager em, AddressRepository addressRepository, AddressBusinessRules addressBusinessRules, CreateAddressProducer createAddressProducer, UpdateAddressProducer updateAddressProducer, DeleteAddressProducer deleteAddressProducer) {
+    public AddressServiceImpl(EntityManager em, AddressRepository addressRepository, AddressBusinessRules addressBusinessRules, CreateAddressProducer createAddressProducer, UpdateAddressProducer updateAddressProducer, DeleteAddressProducer deleteAddressProducer, SoftDeleteAddressProducer softDeleteAddressProducer) {
         this.em = em;
         this.addressRepository = addressRepository;
         this.addressBusinessRules = addressBusinessRules;
         this.createAddressProducer = createAddressProducer;
         this.updateAddressProducer = updateAddressProducer;
         this.deleteAddressProducer = deleteAddressProducer;
+        this.softDeleteAddressProducer = softDeleteAddressProducer;
     }
 
     @Override
@@ -64,7 +68,9 @@ public class AddressServiceImpl implements AddressService {
                 createdAddress.getDistrict().getId(),
                 createdAddress.getDistrict().getName(),
                 createdAddress.getDistrict().getCity().getId(),
-                createdAddress.getDistrict().getCity().getName()
+                createdAddress.getDistrict().getCity().getName(),
+                createdAddress.getCreatedDate().toString(),
+                "",""
         );
 
         createAddressProducer.produceAddressCreated(event);
@@ -96,7 +102,9 @@ public class AddressServiceImpl implements AddressService {
                 updatedAddress.getDistrict().getId(),
                 updatedAddress.getDistrict().getName(),
                 updatedAddress.getDistrict().getCity().getId(),
-                updatedAddress.getDistrict().getCity().getName()
+                updatedAddress.getDistrict().getCity().getName(),
+                updatedAddress.getCreatedDate().toString(),
+                updatedAddress.getUpdatedDate().toString()
         );
 
         updateAddressProducer.produceCustomerUpdated(event);
@@ -153,6 +161,13 @@ public class AddressServiceImpl implements AddressService {
         Address address = addressRepository.findById(id).orElseThrow(() -> new RuntimeException("Address not found"));
         address.setDeletedDate(LocalDateTime.now());
         addressRepository.save(address);
+        SoftDeleteAddressEvent event = new SoftDeleteAddressEvent(
+                address.getCustomer().getId().toString(),
+                id,
+                address.getUpdatedDate().toString(),
+                address.getDeletedDate().toString()
+        );
+      softDeleteAddressProducer.produceAddressSoftDeleted(event);
     }
 
 

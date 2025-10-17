@@ -17,13 +17,13 @@ import java.util.UUID;
 @NoArgsConstructor
 public class CreateAddressRequest {
 
-    @NotBlank(message = Messages.NationalIdentityExists)
+    @NotBlank(message = Messages.AddressStreetNotBlank)
     private String street;
 
-    @NotBlank(message = "{address.houseNumber.notBlank}")
+    @NotBlank(message = Messages.AddressHouseNumberNotBlank)
     private String houseNumber;
 
-    @Size(max = 250, message = "{address.description.size}")
+    @Size(max = 250, message = Messages.AddressDescriptionSize)
     private String description;
 
     private boolean isDefault;
