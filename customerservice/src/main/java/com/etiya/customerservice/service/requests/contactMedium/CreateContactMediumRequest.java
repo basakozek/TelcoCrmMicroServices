@@ -1,5 +1,6 @@
 package com.etiya.customerservice.service.requests.contactMedium;
 
+import com.etiya.customerservice.service.messages.Messages;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -14,21 +15,21 @@ import java.util.UUID;
 @NoArgsConstructor
 //@ContactMediumValueConstraint
 public class CreateContactMediumRequest {
-    @NotNull(message = "{contactMedium.customerId.notNull}")
+    @NotNull(message = Messages.ContactMediumCustomerIdNotNull)
     private UUID customerId;
 
-    @NotBlank(message = "{contactMedium.type.notBlank}")
+    @NotBlank(message = Messages.ContactMediumTypeNotBlank)
     @Pattern(
             regexp = "^(?i)(email|phone_number|social_media|address)$",
-            message = "{contactMedium.type.pattern}"
+            message = Messages.ContactMediumTypePattern
     )
     private String type;
 
-    @NotBlank(message = "{contactMedium.value.notBlank}")
-    @Length(max = 150, message = "{contactMedium.value.length}")
+    @NotBlank(message = Messages.ContactMediumValueNotBlank)
+    @Length(max = 150, message = Messages.ContactMediumValueLength)
     private String value;
 
-    @NotNull(message = "{contactMedium.isPrimary.notNull}")
+    @NotNull(message = Messages.ContactMediumIsPrimaryNotNull)
     private boolean isPrimary;
 }
 

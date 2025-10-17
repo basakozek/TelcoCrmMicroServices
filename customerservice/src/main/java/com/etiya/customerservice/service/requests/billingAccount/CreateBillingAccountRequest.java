@@ -1,5 +1,6 @@
 package com.etiya.customerservice.service.requests.billingAccount;
 
+import com.etiya.customerservice.service.messages.Messages;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -15,36 +16,36 @@ import java.util.UUID;
 @NoArgsConstructor
 public class CreateBillingAccountRequest {
 
-    @NotNull(message = "{billingAccount.customerId.notNull}")
-    @Positive(message = "{billingAccount.customerId.positive}")
+    @NotNull(message = Messages.BillingAccountCustomerIdNotNull)
+    @Positive(message = Messages.BillingAccountCustomerIdPositive)
     private UUID customerId;
 
-    @NotNull(message = "{billingAccount.addressId.notNull}")
-    @Positive(message = "{billingAccount.addressId.positive}")
+    @NotNull(message = Messages.BillingAccountAddressIdNotNull)
+    @Positive(message = Messages.BillingAccountAddressIdPositive)
     private Integer addressId;
 
-    @NotBlank(message = "{billingAccount.type.notBlank}")
+    @NotBlank(message = Messages.BillingAccountTypeNotBlank)
     @Pattern(
             regexp = "^(?i)(INDIVIDUAL|CORPORATE|PREPAID|POSTPAID)$",
-            message = "{billingAccount.type.pattern}"
+            message = Messages.BillingAccountTypePattern
     )
     private String type;
 
-    @NotBlank(message = "{billingAccount.status.notBlank}")
+    @NotBlank(message = Messages.BillingAccountStatusNotBlank)
     @Pattern(
             regexp = "^(?i)(ACTIVE|SUSPENDED|CLOSED)$",
-            message = "{billingAccount.status.pattern}"
+            message = Messages.BillingAccountStatusPattern
     )
     private String status;
 
-    @NotBlank(message = "{billingAccount.accountNumber.notBlank}")
-    @Length(min = 3, max = 100, message = "{billingAccount.accountNumber.length}")
-    @Pattern(regexp = "^[\\p{L}\\p{Nd} -]+$", message = "{billingAccount.accountNumber.pattern}")
+    @NotBlank(message =Messages.BillingAccountAccountNumberNotBlank)
+    @Length(min = 3, max = 100, message = Messages.BillingAccountAccountNumberLength)
+    @Pattern(regexp = "^[\\p{L}\\p{Nd} -]+$", message = Messages.BillingAccountAccountNumberPattern)
     private String accountNumber;
 
-    @NotBlank(message = "{billingAccount.accountName.notBlank}")
-    @Length(min = 3, max = 100, message = "{billingAccount.accountName.length}")
-    @Pattern(regexp = "^[\\p{L}\\p{Nd} -]+$", message = "{billingAccount.accountName.pattern}")
+    @NotBlank(message = Messages.BillingAccountAccountNameNotBlank)
+    @Length(min = 3, max = 100, message = Messages.BillingAccountAccountNameLength)
+    @Pattern(regexp = "^[\\p{L}\\p{Nd} -]+$", message= Messages.BillingAccountAccountNamePattern)
     private String accountName;
 }
 
