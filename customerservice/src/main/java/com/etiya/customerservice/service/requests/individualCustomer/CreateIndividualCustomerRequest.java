@@ -1,5 +1,6 @@
 package com.etiya.customerservice.service.requests.individualCustomer;
 
+import com.etiya.customerservice.service.messages.Messages;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -12,16 +13,16 @@ import java.time.LocalDateTime;
 @Setter
 public class CreateIndividualCustomerRequest {
 
-    @NotBlank(message = "{individualCustomer.firstName.notBlank}")
-    @Size(min = 2, max = 50, message = "{individualCustomer.firstName.length}")
+    @NotBlank(message = Messages.IndividualCustomerFirstNameNotBlank)
+    @Size(min = 2, max = 50, message = Messages.IndividualCustomerFirstNameLength)
     private String firstName;
 
     private String lastName;
     private String middleName;
 
-    @NotBlank(message = "{individualCustomer.nationalId.notBlank}")
-    @Size(min = 11, max = 11, message = "{individualCustomer.nationalId.length}")
-    @Pattern(regexp = "^[0-9]+$", message = "{individualCustomer.nationalId.pattern}")
+    @NotBlank(message = Messages.IndividualCustomerNationalIdNotBlank)
+    @Size(min = 11, max = 11, message = Messages.IndividualCustomerNationalIdLength)
+    @Pattern(regexp = "^[0-9]+$", message = Messages.IndividualCustomerNationalIdPattern)
     private String nationalId;
 
     private LocalDateTime dateOfBirth;
