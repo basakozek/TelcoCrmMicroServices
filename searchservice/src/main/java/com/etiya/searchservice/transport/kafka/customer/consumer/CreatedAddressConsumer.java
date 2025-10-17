@@ -27,18 +27,11 @@ public class CreatedAddressConsumer {
     public Consumer<CreateAddressEvent> addressCreated() {
         return event -> {
             Address address = new Address(event.id(), event.street(), event.houseNumber(), event.description(),
-                event.isDefault(), event.districtId(), event.districtName(), event.cityId(), event.cityName());
+                event.isDefault(), event.districtId(), event.districtName(), event.cityId(), event.cityName()
+                    , event.createdDate(),null,null);
             service.addAddress(event.customerId(), address);
             LOGGER.info(String.format("Sending address event to kafka: %s", event));
 
         };
     }
-
-//    @KafkaListener(topics = "create-address", groupId = "create-address-group")
-//    public void consume(CreateAddressEvent event) {
-//        LOGGER.info(String.format("Received CreateAddressEvent => %s", event));
-//        service.addAddress(event.customerId(),
-//                new Address(event.id(), event.street(), event.houseNumber(), event.description(),
-//                        event.isDefault(), event.districtId(), event.districtName(), event.cityId(), event.cityName()));
-//    }
 }

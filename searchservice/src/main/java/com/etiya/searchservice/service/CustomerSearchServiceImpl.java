@@ -6,7 +6,9 @@ import com.etiya.searchservice.domain.CustomerSearch;
 import com.etiya.searchservice.repository.CustomerSearchRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -27,7 +29,9 @@ public class CustomerSearchServiceImpl implements CustomerSearchService {
 
     @Override
     public List<CustomerSearch> findAll() {
-        return StreamSupport.stream(customerSearchRepository.findAll().spliterator(),false).collect(Collectors.toList());
+        return StreamSupport.stream(customerSearchRepository.findAll().spliterator(), false)
+                .map(this::filterDeletedAddresses)
+                .collect(Collectors.toList());
 
     }
 
@@ -40,7 +44,10 @@ public class CustomerSearchServiceImpl implements CustomerSearchService {
 
     @Override
     public List<CustomerSearch> searchAllFields(String name) {
-        return customerSearchRepository.searchAllFields(name);
+        return customerSearchRepository.searchAllFields(name)
+                .stream()
+                .map(this::filterDeletedAddresses)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -65,7 +72,10 @@ public class CustomerSearchServiceImpl implements CustomerSearchService {
 
     @Override
     public List<CustomerSearch> findByCityAndLastName(String city, String lastName) {
-        return customerSearchRepository.findByCityAndLastName(city, lastName);
+        return customerSearchRepository.findByCityAndLastName(city, lastName)
+                .stream()
+                .map(this::filterDeletedAddresses)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -97,6 +107,18 @@ public class CustomerSearchServiceImpl implements CustomerSearchService {
     }
 
     @Override
+    public void softDeleteAddress(String customerId, int addressId, String updatedDate, String deletedDate) {
+        var cs = customerSearchRepository.findById(customerId).orElseThrow();
+        cs.getAddresses().forEach(address -> {
+            if (address.getId() == addressId) {
+                address.setUpdatedDate(updatedDate);
+                address.setDeletedDate(deletedDate);
+            }
+        });
+        customerSearchRepository.save(cs);
+    }
+
+    @Override
     public void addContactMedium(String customerId, ContactMedium contact) {
         var cs = customerSearchRepository.findById(customerId).orElseThrow();
         cs.getContactMediums().removeIf(c -> c.getId() == contact.getId());
@@ -117,5 +139,15 @@ public class CustomerSearchServiceImpl implements CustomerSearchService {
         var cs = customerSearchRepository.findById(customerId).orElseThrow();
         cs.getContactMediums().removeIf(c -> c.getId() == contactId);
         customerSearchRepository.save(cs);
+    }
+    private CustomerSearch filterDeletedAddresses(CustomerSearch cs) {
+        if (cs.getAddresses() != null) {
+            cs.setAddresses(
+                    cs.getAddresses().stream()
+                            .filter(a -> a.getDeletedDate() == null)
+                            .collect(Collectors.toList())
+            );
+        }
+        return cs;
     }
 }
