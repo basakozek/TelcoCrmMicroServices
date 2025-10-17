@@ -1,6 +1,7 @@
 package com.etiya.customerservice.service.requests.address;
 
 import com.etiya.common.localization.LocalizationService;
+import com.etiya.customerservice.service.messages.Messages;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -16,7 +17,7 @@ import java.util.UUID;
 @NoArgsConstructor
 public class CreateAddressRequest {
 
-    @NotBlank(message = "{address.street.notBlank}")
+    @NotBlank(message = Messages.NationalIdentityExists)
     private String street;
 
     @NotBlank(message = "{address.houseNumber.notBlank}")
