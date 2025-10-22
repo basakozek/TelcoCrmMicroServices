@@ -22,7 +22,8 @@ public class CreateIndividualCustomerRequest {
 
     @NotBlank(message = Messages.IndividualCustomerNationalIdNotBlank)
     @Size(min = 11, max = 11, message = Messages.IndividualCustomerNationalIdLength)
-    @Pattern(regexp = "^[0-9]+$", message = Messages.IndividualCustomerNationalIdPattern)
+    @Pattern(regexp = "^[1-9]*[02468]$", message = Messages.IndividualCustomerNationalIdPattern)
+
     private String nationalId;
 
     private LocalDateTime dateOfBirth;
