@@ -1,15 +1,12 @@
 package com.etiya.customerservice.service.mappings;
 
 import com.etiya.customerservice.domain.entities.IndividualCustomer;
+import com.etiya.customerservice.service.concretes.IndividualCustomerServiceImpl;
 import com.etiya.customerservice.service.mappings.AddressMapper;
 import com.etiya.customerservice.service.requests.individualCustomer.CreateIndividualCustomerRequest;
-import com.etiya.customerservice.service.responses.individualCustomer.CreatedIndividualCustomerResponse;
-import com.etiya.customerservice.service.responses.individualCustomer.GetIndividualCustomerResponse;
-import com.etiya.customerservice.service.responses.individualCustomer.GetListIndividualCustomerResponse;
-import com.etiya.customerservice.service.responses.individualCustomer.GetListIndividualCustomerWithAddressResponse;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
+import com.etiya.customerservice.service.requests.individualCustomer.UpdateIndividualCustomerRequest;
+import com.etiya.customerservice.service.responses.individualCustomer.*;
+import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
 import java.util.List;
@@ -22,6 +19,14 @@ public interface IndividualCustomerMapper {
     IndividualCustomer individualCustomerFromCreateIndividualCustomerRequest(CreateIndividualCustomerRequest request);
 
     CreatedIndividualCustomerResponse createdIndividualCustomerResponseFromIndividualCustomer(IndividualCustomer individualCustomer);
+
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
+            nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)
+    void updateIndividualCustomerFromRequest(UpdateIndividualCustomerRequest request,
+                                             @MappingTarget IndividualCustomer individualCustomer);
+
+    UpdatedIndividualCustomerResponse updatedIndividualCustomerResponseFromIndividualCustomer(IndividualCustomer individualCustomer);
 
     GetIndividualCustomerResponse getIndividualCustomerResponseFromIndividualCustomer(IndividualCustomer individualCustomer);
 

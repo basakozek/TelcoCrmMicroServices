@@ -2,10 +2,8 @@ package com.etiya.customerservice.controller;
 
 import com.etiya.customerservice.service.abstracts.IndividualCustomerService;
 import com.etiya.customerservice.service.requests.individualCustomer.CreateIndividualCustomerRequest;
-import com.etiya.customerservice.service.responses.individualCustomer.CreatedIndividualCustomerResponse;
-import com.etiya.customerservice.service.responses.individualCustomer.GetIndividualCustomerResponse;
-import com.etiya.customerservice.service.responses.individualCustomer.GetListIndividualCustomerResponse;
-import com.etiya.customerservice.service.responses.individualCustomer.GetListIndividualCustomerWithAddressResponse;
+import com.etiya.customerservice.service.requests.individualCustomer.UpdateIndividualCustomerRequest;
+import com.etiya.customerservice.service.responses.individualCustomer.*;
 import jakarta.validation.Valid;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
@@ -36,6 +34,12 @@ public class IndividualCustomerController {
         return individualCustomerService.getList();
     }
 
+
+    @PutMapping("{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public UpdatedIndividualCustomerResponse update(@PathVariable UUID id, @Valid @RequestBody UpdateIndividualCustomerRequest request) {
+        return individualCustomerService.update(id, request);
+    }
 
     @GetMapping("findallwithaddress")
     @ResponseStatus(HttpStatus.OK)
