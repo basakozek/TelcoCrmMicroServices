@@ -10,13 +10,15 @@ import java.util.List;
 @Repository
 public interface CustomerSearchRepository extends ElasticsearchRepository<CustomerSearch,String> {
     @Query("""
-            {
-            "query_string":{
-            "query":"*?0*",
-            "fields":["firstName","lastName","nationalId","customerNumber"]
-            }
-            }
-            """)
+      {
+        "query_string": {
+          "query": "?0",
+          "analyze_wildcard": true,
+          "lenient": true,
+          "default_operator": "AND"
+        }
+      }
+      """)
     List<CustomerSearch> searchAllFields(String keyword);
 
 
