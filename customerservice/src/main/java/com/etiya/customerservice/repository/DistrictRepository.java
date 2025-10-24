@@ -26,4 +26,6 @@ public interface DistrictRepository extends JpaRepository<District, Integer> {
 
     @Query(value = "select (count(*) > 0) from districts d join cities c on c.id = d.city_id where c.id = :cityId", nativeQuery = true)
     boolean existCity(@Param("cityId") int cityId);
+
+    List<District> findByCityId( int cityId);
 }

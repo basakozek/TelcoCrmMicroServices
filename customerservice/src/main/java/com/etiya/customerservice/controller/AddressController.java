@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/addresses")
@@ -81,5 +82,10 @@ public class AddressController {
     @ResponseStatus(HttpStatus.OK)
     public UpdatedAddressResponse update(@Valid @RequestBody UpdateAddressRequest request) {
         return addressService.update(request);
+    }
+    @GetMapping("findByCustomerId/{customerId}")
+    @ResponseStatus(HttpStatus.OK)
+    public List<GetListAddressResponse> findByCustomerId(@PathVariable UUID customerId){
+        return addressService.findByCustomerId(customerId);
     }
 }

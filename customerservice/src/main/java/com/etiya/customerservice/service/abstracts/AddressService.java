@@ -10,6 +10,7 @@ import com.etiya.customerservice.service.responses.address.GetListAddressRespons
 import com.etiya.customerservice.service.responses.address.UpdatedAddressResponse;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface AddressService {
     CreatedAddressResponse add(CreateAddressRequest CreateAddressRequest);
@@ -24,4 +25,5 @@ public interface AddressService {
 
     void delete(int id);
     void softDelete(int id);
+    List<GetListAddressResponse> findByCustomerId(UUID customerId);
 }

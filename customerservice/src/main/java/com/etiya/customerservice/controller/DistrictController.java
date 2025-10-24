@@ -63,6 +63,12 @@ public class DistrictController {
     public void delete(@PathVariable int id) {
         districtService.delete(id);
     }
+
+    @GetMapping("findByCityId/{cityId}")
+    @ResponseStatus(HttpStatus.OK)
+    public List<GetListDistrictResponse> findByCityId(@PathVariable int cityId) {
+        return districtService.findByCityId(cityId);
+    }
 }
 
 

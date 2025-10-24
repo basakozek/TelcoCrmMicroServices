@@ -170,5 +170,12 @@ public class AddressServiceImpl implements AddressService {
       softDeleteAddressProducer.produceAddressSoftDeleted(event);
     }
 
+    @Override
+    public List<GetListAddressResponse> findByCustomerId(UUID customerId) {
+        List<Address> addresses = addressRepository.findByCustomerId(customerId);
+        List<GetListAddressResponse> response = AddressMapper.INSTANCE.getListAddressResponsesFromAddresses(addresses);
+        return response;
+    }
+
 
 }

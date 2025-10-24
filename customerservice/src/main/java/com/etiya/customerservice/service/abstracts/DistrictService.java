@@ -1,5 +1,6 @@
 package com.etiya.customerservice.service.abstracts;
 
+import com.etiya.customerservice.domain.entities.District;
 import com.etiya.customerservice.service.requests.district.CreateDistrictRequest;
 import com.etiya.customerservice.service.requests.district.UpdateDistrictRequest;
 import com.etiya.customerservice.service.responses.district.*;
@@ -22,4 +23,6 @@ public interface DistrictService {
     List<GetListDistrictResponse> findDistrictByName(String name);
 
     void delete(int id);
+
+    List<GetListDistrictResponse> findByCityId(int cityId);
 }

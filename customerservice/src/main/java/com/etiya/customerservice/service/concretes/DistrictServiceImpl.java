@@ -86,4 +86,11 @@ public class DistrictServiceImpl implements DistrictService {
         districtRepository.delete(district);
     }
 
+    @Override
+    public List<GetListDistrictResponse> findByCityId(int cityId) {
+        List<District> districts = districtRepository.findByCityId(cityId);
+        List<GetListDistrictResponse> response = DistrictMapper.INSTANCE.getListDistrictResponseFromDistrict(districts);
+        return response;
+    }
+
 }
