@@ -63,7 +63,7 @@ services:
   #DB Configuration
   customerservicedb:
     container_name: customerservicedb
-    image: postgres
+    image: postgres:18
     ports:
       - "5450:5432"
     environment:
@@ -71,7 +71,7 @@ services:
       - POSTGRES_PASSWORD=123456
       - POSTGRES_DB=customerdb
     volumes:
-      - "customer-data:/var/lib/postgresql/data"
+      - "customer-data:/var/lib/postgresql"
 
   searchservicedb:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.15.2

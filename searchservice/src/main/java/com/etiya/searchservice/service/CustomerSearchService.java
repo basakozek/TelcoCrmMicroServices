@@ -1,5 +1,6 @@
 package com.etiya.searchservice.service;
 
+import com.etiya.common.events.UpdateCustomerEvent;
 import com.etiya.searchservice.domain.Address;
 import com.etiya.searchservice.domain.ContactMedium;
 import com.etiya.searchservice.domain.CustomerSearch;
@@ -10,6 +11,7 @@ public interface CustomerSearchService {
     void add(CustomerSearch customerSearch);
     List<CustomerSearch> findAll();
     void delete(String id);
+    void updateCustomer(UpdateCustomerEvent event);
 
     List<CustomerSearch> searchAllFields(String name);
     List<CustomerSearch> findByFirstName(String firstName);

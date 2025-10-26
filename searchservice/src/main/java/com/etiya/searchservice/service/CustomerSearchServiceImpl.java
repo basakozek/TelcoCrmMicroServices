@@ -1,5 +1,6 @@
 package com.etiya.searchservice.service;
 
+import com.etiya.common.events.UpdateCustomerEvent;
 import com.etiya.searchservice.domain.Address;
 import com.etiya.searchservice.domain.ContactMedium;
 import com.etiya.searchservice.domain.CustomerSearch;
@@ -39,6 +40,37 @@ public class CustomerSearchServiceImpl implements CustomerSearchService {
     public void delete(String id) {
 
         customerSearchRepository.deleteById(id);
+
+    }
+
+    @Override
+    public void updateCustomer(UpdateCustomerEvent event) {
+        // Elasticsearch'ten event'teki customerId ile müşteriyi bulur
+        customerSearchRepository.findById(event.customerId()).ifPresentOrElse(
+                customerSearch -> {
+                    // Müşteri bulunduysa, event'teki bilgilerle alanları günceller
+                    customerSearch.setFirstName(event.firstName());
+                    customerSearch.setLastName(event.lastName());
+                    customerSearch.setMotherName(event.motherName());
+                    customerSearch.setFatherName(event.fatherName());
+                    customerSearch.setGender(event.gender());
+                    customerSearch.setDateOfBirth(event.dateOfBirth());
+                    customerSearch.setCustomerNumber(event.customerNumber());
+                    customerSearch.setNationalId(event.nationalId());
+
+                    // event'te varsa ve güncellenmesi gerekiyorsa buraya eklenebilir.
+
+                    // Güncellenmiş müşteri dökümanını Elasticsearch'e kaydeder
+                    customerSearchRepository.save(customerSearch);
+                    // Loglama eklenebilir:
+                    // LOGGER.info("Customer {} updated in Elasticsearch based on UpdateCustomerEvent.", event.customerId());
+                },
+                () -> {
+                    // Müşteri bulunamazsa loglama veya başka bir işlem yapılabilir
+
+
+                }
+        );
 
     }
 

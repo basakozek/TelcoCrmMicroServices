@@ -2,6 +2,7 @@ package com.etiya.customerservice.service.concretes;
 
 import com.etiya.common.crosscuttingconcerns.exceptions.types.BusinessException;
 import com.etiya.common.events.CreateCustomerEvent;
+import com.etiya.common.events.UpdateCustomerEvent;
 import com.etiya.customerservice.domain.entities.IndividualCustomer;
 import com.etiya.customerservice.repository.IndividualCustomerRepository;
 import com.etiya.customerservice.service.abstracts.IndividualCustomerService;
@@ -11,6 +12,7 @@ import com.etiya.customerservice.service.requests.individualCustomer.UpdateIndiv
 import com.etiya.customerservice.service.responses.individualCustomer.*;
 import com.etiya.customerservice.service.rules.IndividualCustomerBusinessRules;
 import com.etiya.customerservice.transport.kafka.producer.customer.CreateCustomerProducer;
+import com.etiya.customerservice.transport.kafka.producer.customer.UpdateCustomerProducer;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
 
@@ -26,11 +28,13 @@ public class IndividualCustomerServiceImpl implements IndividualCustomerService 
     private final IndividualCustomerRepository individualCustomerRepository;
     private final IndividualCustomerBusinessRules individualCustomerBusinessRules;
     private final CreateCustomerProducer createCustomerProducer;
+    private final UpdateCustomerProducer updateCustomerProducer;
 
-    public IndividualCustomerServiceImpl(IndividualCustomerRepository individualCustomerRepository, IndividualCustomerBusinessRules individualCustomerBusinessRules, CreateCustomerProducer createCustomerProducer) {
+    public IndividualCustomerServiceImpl(IndividualCustomerRepository individualCustomerRepository, IndividualCustomerBusinessRules individualCustomerBusinessRules, CreateCustomerProducer createCustomerProducer, UpdateCustomerProducer updateCustomerProducer) {
         this.individualCustomerRepository = individualCustomerRepository;
         this.individualCustomerBusinessRules =  individualCustomerBusinessRules;
         this.createCustomerProducer = createCustomerProducer;
+        this.updateCustomerProducer = updateCustomerProducer;
     }
 
     @Override
@@ -83,6 +87,22 @@ public class IndividualCustomerServiceImpl implements IndividualCustomerService 
         // existingCustomer.setNationalId(existingCustomer.getNationalId()); // örnek
 
         IndividualCustomer saved = individualCustomerRepository.save(existingCustomer);
+
+        // Yeni eklenen kısım: Olayı oluştur ve gönder
+        UpdateCustomerEvent event =
+                new UpdateCustomerEvent(
+                saved.getId().toString(), // UUID to String
+                saved.getCustomerNumber(),
+                saved.getFirstName(),
+                saved.getLastName(),
+                saved.getNationalId(),
+                saved.getMotherName(),
+                saved.getFatherName(),
+                saved.getGender(),
+                saved.getDateOfBirth().toString());
+
+        updateCustomerProducer.produceCustomerUpdated(event); // Producer sınıfında kafka topic ile iletişim kuran metoda yolla
+
         return IndividualCustomerMapper.INSTANCE.updatedIndividualCustomerResponseFromIndividualCustomer(saved);
     }
 
