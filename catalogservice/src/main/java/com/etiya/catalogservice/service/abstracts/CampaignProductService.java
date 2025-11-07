@@ -1,6 +1,6 @@
 package com.etiya.catalogservice.service.abstracts;
 
-import com.etiya.catalogservice.service.dtos.campaignProduct.CreateCampaignProductRequest;
+import com.etiya.catalogservice.service.dtos.request.campaignProduct.CreateCampaignProductRequest;
 import com.etiya.catalogservice.service.dtos.response.campaignProduct.CreatedCampaignProductResponse;
 import com.etiya.common.responses.ActiveCampaignProductResponse;
 

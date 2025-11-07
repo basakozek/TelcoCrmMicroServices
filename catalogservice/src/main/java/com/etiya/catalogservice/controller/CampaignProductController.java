@@ -1,7 +1,7 @@
 package com.etiya.catalogservice.controller;
 
 import com.etiya.catalogservice.service.abstracts.CampaignProductService;
-import com.etiya.catalogservice.service.dtos.campaignProduct.CreateCampaignProductRequest;
+import com.etiya.catalogservice.service.dtos.request.campaignProduct.CreateCampaignProductRequest;
 import com.etiya.catalogservice.service.dtos.response.campaignProduct.CreatedCampaignProductResponse;
 import com.etiya.common.responses.ActiveCampaignProductResponse;
 import jakarta.validation.Valid;

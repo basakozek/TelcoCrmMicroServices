@@ -6,7 +6,7 @@ import com.etiya.catalogservice.domain.entities.Product;
 import com.etiya.catalogservice.repository.CampaignProductRepository;
 import com.etiya.catalogservice.repository.CampaignRepository;
 import com.etiya.catalogservice.repository.ProductRepository;
-import com.etiya.catalogservice.service.dtos.campaignProduct.CreateCampaignProductRequest;
+import com.etiya.catalogservice.service.dtos.request.campaignProduct.CreateCampaignProductRequest;
 import com.etiya.catalogservice.service.dtos.response.campaignProduct.CreatedCampaignProductResponse;
 import com.etiya.common.crosscuttingconcerns.exceptions.types.BusinessException;
 import com.etiya.common.responses.ActiveCampaignProductResponse;

@@ -80,6 +80,10 @@ public class ProductOfferServiceImpl implements ProductOfferService {
         r.setProductOfferId(po.getId());
         r.setProductId(po.getProduct().getId());
         r.setStatus(po.getStatus());
+        r.setDescription(po.getDescription());
+        r.setName(po.getName());
+        r.setStartDate(po.getStartDate());
+        r.setEndDate(po.getEndDate());
         // discountRate'i 0..1 normalize et
         double rate = po.getDiscountRate();
         if (rate > 1.0) rate = rate / 100.0;
