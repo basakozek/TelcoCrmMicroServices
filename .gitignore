@@ -76,3 +76,6 @@ Desktop.ini
 *.pid
 *.seed
 *.pid.lock
+
+# Local Podman / macOS override config
+podman-compose.local.yml
