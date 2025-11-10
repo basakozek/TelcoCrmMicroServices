@@ -4,8 +4,8 @@ package com.etiya.common.responses;
 import java.time.LocalDateTime;
 
 public class ActiveProductOfferResponse {
-    private int productOfferId;
-    private String productId;
+    private String productOfferId;
+    private String productId; //silmeye üşendim aynı şey
     private String name;
     private String description;
     private LocalDateTime startDate;
@@ -45,11 +45,11 @@ public class ActiveProductOfferResponse {
         this.endDate = endDate;
     }
 
-    public int getProductOfferId() {
+    public String getProductOfferId() {
         return productOfferId;
     }
 
-    public void setProductOfferId(int productOfferId) {
+    public void setProductOfferId(String productOfferId) {
         this.productOfferId = productOfferId;
     }
 

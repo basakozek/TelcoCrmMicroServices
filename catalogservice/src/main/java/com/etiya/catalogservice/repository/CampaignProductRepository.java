@@ -1,28 +1,28 @@
 package com.etiya.catalogservice.repository;
 
-import com.etiya.catalogservice.domain.entities.CampaignProducts;
+import com.etiya.catalogservice.domain.entities.CampaignProductOffer;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface CampaignProductRepository extends JpaRepository<CampaignProducts, Integer> {
+public interface CampaignProductRepository extends JpaRepository<CampaignProductOffer, Integer> {
     // Ürüne bağlı, tarihi "aktif" kampanyalar içinde en yüksek indirimli olanı getir
     @Query("""
-           select cp from CampaignProducts cp
+           select cp from CampaignProductOffer cp
            join cp.campaign c
-           where cp.product.id = :productId
+           where cp.productOffer.id = :productOfferId
              and c.startDate <= CURRENT_TIMESTAMP
              and (c.endDate is null or c.endDate >= CURRENT_TIMESTAMP)
            """)
-    List<CampaignProducts> findActiveByProduct(String productId);
+    List<CampaignProductOffer> findActiveByProduct(String productOfferId);
 
     @Query("""
-           select cp from CampaignProducts cp
+           select cp from CampaignProductOffer cp
            join cp.campaign c
            where c.startDate <= CURRENT_TIMESTAMP
              and (c.endDate is null or c.endDate >= CURRENT_TIMESTAMP)
            """)
-    List<CampaignProducts> findAllActive();
+    List<CampaignProductOffer> findAllActive();
 
 }

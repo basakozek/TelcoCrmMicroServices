@@ -21,10 +21,10 @@ public class BasketController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public void add(@RequestParam int billingAccId,
-                    @RequestParam String productId,
+                    @RequestParam String productOfferId,
                     @RequestParam(name = "qty", required = false, defaultValue = "1") int qty) {
         for (int i = 0; i < Math.max(1, qty); i++) {
-            basketService.add(billingAccId, productId);
+            basketService.add(billingAccId, productOfferId);
         }
     }
 
@@ -32,5 +32,19 @@ public class BasketController {
     @ResponseStatus(HttpStatus.OK)
     public Map<String, Basket> getAll(){
         return basketService.getAll();
+    }
+
+    // YENİ: Sepetten tekil ürün silme
+    @DeleteMapping("/{billingAccountId}/items/{basketItemId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteItem(@PathVariable int billingAccountId, @PathVariable String basketItemId) {
+        basketService.deleteItem(billingAccountId, basketItemId);
+    }
+
+    // YENİ: Sepeti tamamen temizleme
+    @DeleteMapping("/{billingAccountId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void clearBasket(@PathVariable int billingAccountId) {
+        basketService.clearBasket(billingAccountId);
     }
 }

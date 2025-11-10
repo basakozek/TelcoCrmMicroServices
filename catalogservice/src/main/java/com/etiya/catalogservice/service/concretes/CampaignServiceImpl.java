@@ -1,14 +1,11 @@
 package com.etiya.catalogservice.service.concretes;
 
 import com.etiya.catalogservice.domain.entities.Campaign;
-import com.etiya.catalogservice.domain.entities.Product;
 import com.etiya.catalogservice.repository.CampaignRepository;
 import com.etiya.catalogservice.service.abstracts.CampaignService;
 import com.etiya.catalogservice.service.dtos.request.campaign.CreateCampaignRequest;
 import com.etiya.catalogservice.service.dtos.response.campaign.CreatedCampaignResponse;
-import com.etiya.catalogservice.service.dtos.response.product.CreatedProductResponse;
 import com.etiya.catalogservice.service.mappers.CampaignMapper;
-import com.etiya.catalogservice.service.mappers.ProductMapper;
 import org.springframework.stereotype.Service;
 
 @Service

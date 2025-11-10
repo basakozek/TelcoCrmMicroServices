@@ -37,7 +37,7 @@ public class ProductSpecification extends BaseEntity {
     // Bir 'Spec' (şablon), birden fazla somut 'Product' (SKU) tarafından kullanılabilir
     // Product entity'sindeki "productSpecification" alanına bağlanır
     @OneToMany(mappedBy = "productSpecification", fetch = FetchType.LAZY)
-    private List<Product> products;
+    private List<ProductOffer> productOffer;
 
     // Bir 'Spec' (şablon), birden fazla niteliğe (Characteristic) sahip olabilir
     // (ProductSpecCharacteristic ara tablosu üzerinden)

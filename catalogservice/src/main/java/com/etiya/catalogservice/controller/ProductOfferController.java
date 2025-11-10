@@ -4,6 +4,7 @@ import com.etiya.catalogservice.service.abstracts.ProductOfferService;
 import com.etiya.catalogservice.service.dtos.request.productOffer.CreateProductOfferRequest;
 import com.etiya.catalogservice.service.dtos.response.productOffer.CreatedProductOfferResponse;
 import com.etiya.common.responses.ActiveProductOfferResponse;
+import com.etiya.common.responses.ProductResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -40,11 +41,20 @@ public class ProductOfferController {
         return service.getBestActiveForProduct(productId)
                 .orElseGet(() -> {
                     var r = new ActiveProductOfferResponse();
-                    r.setProductOfferId(0);
+                    r.setProductOfferId("0");
                     r.setProductId(productId);
                     r.setDiscountRate(0.0);
                     r.setStatus("None");
                     return r;
                 });
     }
+    // YENİ ENDPOINT (BasketService Feign Client için)
+    @GetMapping("/{id}/for-basket")
+    @ResponseStatus(HttpStatus.OK)
+    public ProductResponse getByIdForBasket(@PathVariable String id) {
+        return service.getByIdForBasket(id);
+    }
+
+    // NOT: getList, getById, update, delete endpoint'lerini de buraya ekleyebiliriz
+
 }

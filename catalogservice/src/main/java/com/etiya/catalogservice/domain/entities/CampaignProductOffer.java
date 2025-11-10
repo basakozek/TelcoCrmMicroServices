@@ -12,12 +12,12 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "product_char_values",
+@Table(name = "campaign_products",
         uniqueConstraints = {
-        // Bir ürün için bir nitelik değeri sadece bir kez sabitlenebilir
-        @UniqueConstraint(columnNames = {"char_value_id", "product_id"})
-})
-public class ProdCharValues extends BaseEntity {
+                // Bir ürün, bir kampanyaya sadece bir kez dahil edilebilir
+                @UniqueConstraint(columnNames = {"product_offer_id", "campaign_id"})
+        })
+public class CampaignProductOffer extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,12 +25,11 @@ public class ProdCharValues extends BaseEntity {
     private int id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "char_value_id", nullable = false)
-    private CharacteristicValue characteristicValue;
+    @JoinColumn(name = "product_offer_id", nullable = false)
+    private ProductOffer productOffer;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id", nullable = false)
-    private Product product;
-
+    @JoinColumn(name = "campaign_id", nullable = false)
+    private Campaign campaign;
 
 }

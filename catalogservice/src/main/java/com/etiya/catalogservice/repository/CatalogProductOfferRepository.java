@@ -14,7 +14,7 @@ public interface CatalogProductOfferRepository extends JpaRepository<CatalogProd
            select cpo from CatalogProductOffer cpo
            join fetch cpo.catalog c
            join fetch cpo.productOffer po
-           join fetch po.product p
+           join fetch po.productSpecification ps
            where c.id = :catalogId
            """)
     List<CatalogProductOffer> findAllByCatalogIdWithDetail(@Param("catalogId") int catalogId);
@@ -24,7 +24,7 @@ public interface CatalogProductOfferRepository extends JpaRepository<CatalogProd
            select cpo from CatalogProductOffer cpo
            join fetch cpo.catalog c
            join fetch cpo.productOffer po
-           join fetch po.product p
+           join fetch po.productSpecification ps
            where c.id = :catalogId
              and upper(po.status) = 'ACTIVE'
              and po.startDate <= :now

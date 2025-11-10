@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -41,5 +40,5 @@ public class Campaign extends BaseEntity {
 
     // Bir kampanya, birden fazla ürünü kapsayabilir (CampaignProduct ara tablosu üzerinden)
     @OneToMany(mappedBy = "campaign", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<CampaignProducts> campaignProducts;
+    private List<CampaignProductOffer> campaignProductOffers;
 }

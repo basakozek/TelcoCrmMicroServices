@@ -4,7 +4,7 @@ public class ActiveCampaignProductResponse {
     private int campaignProductId;
     private int campaignId;
     private String campaignName;
-    private String productId;
+    private String productOfferId;
     private double discountRate; // 0..1
 
 
@@ -33,11 +33,11 @@ public class ActiveCampaignProductResponse {
     }
 
     public String getProductId() {
-        return productId;
+        return productOfferId;
     }
 
     public void setProductId(String productId) {
-        this.productId = productId;
+        this.productOfferId = productId;
     }
 
     public double getDiscountRate() {

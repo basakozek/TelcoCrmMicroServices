@@ -7,7 +7,7 @@ import com.etiya.common.responses.ActiveCampaignProductResponse;
 import java.util.List;
 import java.util.Optional;
 
-public interface CampaignProductService {
+public interface CampaignProductOfferService {
 
     Optional<ActiveCampaignProductResponse> getBestActiveForProduct(String productId);
     List<ActiveCampaignProductResponse> getAllActive();

@@ -34,11 +34,7 @@ public class Catalog extends BaseEntity {
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Catalog> children;
 
-    // Bir kataloğun birden fazla ürünü olabilir (Product tablosundaki catalog_id FK'sı)
-    @OneToMany(mappedBy = "catalog", fetch = FetchType.LAZY)
-    private List<Product> products;
-
-    // Bir katalogda birden fazla ürün teklifi olabilir (catalog_product_offers join tablosu)
+    // Bir katalogda birden fazla ürün teklifi olabilir (catalog_product_offers join tablosu)"
     @OneToMany(mappedBy = "catalog", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<CatalogProductOffer> catalogProductOffers;
 

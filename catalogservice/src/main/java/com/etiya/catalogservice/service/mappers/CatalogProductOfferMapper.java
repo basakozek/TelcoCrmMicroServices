@@ -30,14 +30,15 @@ public interface CatalogProductOfferMapper {
     @Mapping(target = "productOfferId",        source = "productOffer.id")
     @Mapping(target = "productOfferName",      source = "productOffer.name")
     @Mapping(target = "productOfferDescription", source = "productOffer.description")
+
     @Mapping(target = "discountRate",          source = "productOffer.discountRate")
     @Mapping(target = "status",                source = "productOffer.status")
     @Mapping(target = "startDate",             source = "productOffer.startDate")
     @Mapping(target = "endDate",               source = "productOffer.endDate")
 
-    @Mapping(target = "productId",    source = "productOffer.product.id")
-    @Mapping(target = "productName",  source = "productOffer.product.name")
-    @Mapping(target = "productPrice", source = "productOffer.product.price")
+    @Mapping(target = "productId",    source = "productOffer.id")
+    @Mapping(target = "productName",  source = "productOffer.name")
+    @Mapping(target = "productPrice", source = "productOffer.price")
     CatalogProductOfferWithDetailResponse toResponse(CatalogProductOffer cpo);
 
     List<CatalogProductOfferWithDetailResponse> toResponse(List<CatalogProductOffer> cpos);

@@ -1,11 +1,12 @@
 package com.etiya.catalogservice.service.concretes;
 
 import com.etiya.catalogservice.domain.entities.Campaign;
-import com.etiya.catalogservice.domain.entities.CampaignProducts;
-import com.etiya.catalogservice.domain.entities.Product;
+import com.etiya.catalogservice.domain.entities.CampaignProductOffer;
+import com.etiya.catalogservice.domain.entities.ProductOffer;
 import com.etiya.catalogservice.repository.CampaignProductRepository;
 import com.etiya.catalogservice.repository.CampaignRepository;
-import com.etiya.catalogservice.repository.ProductRepository;
+import com.etiya.catalogservice.repository.ProductOfferRepository;
+import com.etiya.catalogservice.service.abstracts.CampaignProductOfferService;
 import com.etiya.catalogservice.service.dtos.request.campaignProduct.CreateCampaignProductRequest;
 import com.etiya.catalogservice.service.dtos.response.campaignProduct.CreatedCampaignProductResponse;
 import com.etiya.common.crosscuttingconcerns.exceptions.types.BusinessException;
@@ -18,15 +19,15 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class CampaignProductServiceImpl implements com.etiya.catalogservice.service.abstracts.CampaignProductService {
+public class CampaignProductOfferServiceImpl implements CampaignProductOfferService {
     private final CampaignProductRepository repository;
     private final CampaignRepository campaignRepository;
-    private final ProductRepository productRepository;
+    private final ProductOfferRepository productOfferRepository; // GÜNCELLENDİ
 
-    public CampaignProductServiceImpl(CampaignProductRepository repository, CampaignRepository campaignRepository, ProductRepository productRepository) {
+    public CampaignProductOfferServiceImpl(CampaignProductRepository repository, CampaignRepository campaignRepository, ProductOfferRepository productOfferRepository) {
         this.repository = repository;
         this.campaignRepository = campaignRepository;
-        this.productRepository = productRepository;
+        this.productOfferRepository = productOfferRepository;
     }
 
     @Override
@@ -45,22 +46,22 @@ public class CampaignProductServiceImpl implements com.etiya.catalogservice.serv
     @Override
     public CreatedCampaignProductResponse add(CreateCampaignProductRequest r) {
         // 1) Ürün & kampanya kontrolü
-        Product product = productRepository.findById(r.getProductId())
-                .orElseThrow(() -> new BusinessException("Product not found: " + r.getProductId()));
+        ProductOffer productOffer = productOfferRepository.findById(r.getProductId())
+                .orElseThrow(() -> new BusinessException("ProductOffer not found: " + r.getProductId()));
         Campaign campaign = campaignRepository.findById(r.getCampaignId())
                 .orElseThrow(() -> new BusinessException("Campaign not found: " + r.getCampaignId()));
 
         // 2) Duplicate engelleme (unique constraint var; yine de önkontrol)
         boolean exists = repository.findAll().stream()
-                .anyMatch(cp -> cp.getProduct().getId().equals(product.getId())
+                .anyMatch(cp -> cp.getProductOffer().getId().equals(productOffer.getId())
                         && cp.getCampaign().getId() == campaign.getId());
         if (exists) {
             throw new BusinessException("This product is already added to the campaign");
         }
 
         // 3) Kaydet
-        CampaignProducts cp = new CampaignProducts();
-        cp.setProduct(product);
+        CampaignProductOffer cp = new CampaignProductOffer();
+        cp.setProductOffer(productOffer);
         cp.setCampaign(campaign);
 
         try {
@@ -73,18 +74,18 @@ public class CampaignProductServiceImpl implements com.etiya.catalogservice.serv
         // 4) Response
         CreatedCampaignProductResponse resp = new CreatedCampaignProductResponse();
         resp.setId(cp.getId());
-        resp.setProductId(product.getId());
+        resp.setProductId(productOffer.getId());
         resp.setCampaignId(campaign.getId());
         return resp;
     }
 
-    private ActiveCampaignProductResponse map(CampaignProducts cp) {
+    private ActiveCampaignProductResponse map(CampaignProductOffer cp) {
         var c = cp.getCampaign();
         ActiveCampaignProductResponse r = new ActiveCampaignProductResponse();
         r.setCampaignProductId(cp.getId());
         r.setCampaignId(c.getId());
         r.setCampaignName(c.getName());
-        r.setProductId(cp.getProduct().getId());
+        r.setProductId(cp.getProductOffer().getId());
         r.setDiscountRate(normalize(c.getDiscountRate()));
         return r;
     }
