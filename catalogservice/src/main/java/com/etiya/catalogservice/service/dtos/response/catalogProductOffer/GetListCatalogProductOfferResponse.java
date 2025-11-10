@@ -7,6 +7,6 @@ import lombok.Setter;
 @Setter
 public class GetListCatalogProductOfferResponse {
     private int id;
-    private int productOfferId;
+    private String productOfferId;
     private int catalogId;
 }

@@ -9,7 +9,7 @@ public class CatalogProductOfferWithDetailResponse {
 
     private int catalogId;
 
-    private int productOfferId;
+    private String productOfferId;
     private String productOfferName;
     private String productOfferDescription;
     private double discountRate;       // normalize edilmiş: 0..1

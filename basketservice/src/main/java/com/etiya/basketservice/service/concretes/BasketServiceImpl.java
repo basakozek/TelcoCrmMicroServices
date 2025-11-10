@@ -50,7 +50,9 @@ public class BasketServiceImpl implements BasketService {
         double campRate  = (campDiscount  != null) ? normalize(campDiscount.getDiscountRate())  : 0.0;
         double bestRate  = Math.max(offerRate, campRate);
 
-        int offerId = (offerRate > 0) ? Integer.parseInt(offerDiscount.getProductOfferId()) : 0; // int'e çevrildi
+        String offerId = (offerRate > 0 && offerDiscount != null)
+                ? offerDiscount.getProductOfferId()
+                : null;
         int campId  = (campRate  > 0) ? campDiscount.getCampaignProductId() : 0;
 
         // 4. Sepeti al veya oluştur

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 )
 public interface CatalogServiceClient {
 
-    @GetMapping("/api/products-offers/{id}/for-basket")
+    @GetMapping("/api/product-offers/{id}/for-basket")
     ProductResponse getById(@PathVariable("id") String id);
 
     // GÜNCELLENDİ: Ürünün kendi indirimini çeker.
