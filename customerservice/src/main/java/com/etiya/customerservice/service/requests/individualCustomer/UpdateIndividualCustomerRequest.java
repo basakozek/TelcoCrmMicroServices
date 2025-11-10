@@ -29,7 +29,6 @@ public class UpdateIndividualCustomerRequest {
 
     @NotNull(message = Messages.DateOfBirthNotNull)
     @PastOrPresent(message = Messages.DateOfBirthCannotBeInFuture)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     private LocalDateTime dateOfBirth;
 
     @Size(min = 2, max = 50, message = Messages.IndividualCustomerMotherNameLength)

@@ -35,5 +35,5 @@ public class CharacteristicValue extends BaseEntity {
 
     // Bu değerin (Örn: "8 Mbps") hangi ürünlerde sabitlendiğini gösteren ara tablo
     @OneToMany(mappedBy = "characteristicValue", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<ProdCharValues> prodCharValues;
+    private List<ProdOfferCharValues> prodOfferCharValues;
 }

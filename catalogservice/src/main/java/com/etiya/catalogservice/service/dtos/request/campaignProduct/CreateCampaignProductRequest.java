@@ -1,4 +1,4 @@
-package com.etiya.catalogservice.service.dtos.campaignProduct;
+package com.etiya.catalogservice.service.dtos.request.campaignProduct;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -6,16 +6,16 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.Optional;
 
-public interface ProductOfferRepository extends JpaRepository<ProductOffer, Integer> {
+public interface ProductOfferRepository extends JpaRepository<ProductOffer, String> {
     @Query("""
            select po from ProductOffer po
-           where po.product.id = :productId
+           where po.id = :productOfferId
              and po.status = 'Active'
              and po.startDate <= CURRENT_TIMESTAMP
              and (po.endDate is null or po.endDate >= CURRENT_TIMESTAMP)
            order by po.discountRate desc
            """)
-    Optional<ProductOffer> findBestActiveForProduct(String productId);
+    Optional<ProductOffer> findBestActiveForProduct(String productOfferId);
 
     @Query("""
            select po from ProductOffer po

@@ -9,12 +9,11 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreatedProductOfferResponse {
+public class GetListProductOfferResponse {
     private String id; // UUID
     private String name;
     private double price; // Liste fiyatı
     private int stock;
-    private int productSpecificationId;
     private String status;
-    private double discountRate; // 0..1 formatında
+    private String productSpecificationName; // Spec'in adı
 }

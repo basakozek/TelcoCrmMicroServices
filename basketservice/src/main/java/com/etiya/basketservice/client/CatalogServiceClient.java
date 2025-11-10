@@ -13,15 +13,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 )
 public interface CatalogServiceClient {
 
-    @GetMapping("/api/products/{id}")
+    @GetMapping("/api/product-offers/{id}/for-basket")
     ProductResponse getById(@PathVariable("id") String id);
 
-    // Ürüne bağlı en iyi aktif teklif
-    @GetMapping("/api/product-offers/active/{productId}")
-    ActiveProductOfferResponse getBestActiveOffer(@PathVariable("productId") String productId);
+    // GÜNCELLENDİ: Ürünün kendi indirimini çeker.
+    @GetMapping("/api/product-offers/active/{productOfferId}")
+    ActiveProductOfferResponse getBestActiveOffer(@PathVariable("productOfferId") String productOfferId);
 
     // Ürüne bağlı en iyi aktif kampanya
-    @GetMapping("/api/campaign-products/active/{productId}")
-    ActiveCampaignProductResponse getBestActiveCampaign(@PathVariable("productId") String productId);
+    @GetMapping("/api/campaign-products/active/{productOfferId}")
+    ActiveCampaignProductResponse getBestActiveCampaign(@PathVariable("productOfferId") String productOfferId);
 
 }

@@ -5,16 +5,19 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreatedProductOfferResponse {
+public class UpdatedProductOfferResponse {
     private String id; // UUID
     private String name;
     private double price; // Liste fiyatı
     private int stock;
     private int productSpecificationId;
     private String status;
-    private double discountRate; // 0..1 formatında
+    private double discountRate;
+    private LocalDateTime updatedDate;
 }

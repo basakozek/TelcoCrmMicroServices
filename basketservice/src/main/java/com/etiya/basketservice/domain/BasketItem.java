@@ -20,7 +20,7 @@ public class BasketItem implements Serializable {
 
     private double discountedPrice;
 
-    private int productOfferId;
+    private String productOfferId;
 
     private int campaignProductId;
 
@@ -84,11 +84,11 @@ public class BasketItem implements Serializable {
         this.discountedPrice = discountedPrice;
     }
 
-    public int getProductOfferId() {
+    public String getProductOfferId() {
         return productOfferId;
     }
 
-    public void setProductOfferId(int productOfferId) {
+    public void setProductOfferId(String productOfferId) {
         this.productOfferId = productOfferId;
     }
 
