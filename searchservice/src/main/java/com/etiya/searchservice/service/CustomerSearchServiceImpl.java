@@ -1,14 +1,27 @@
 package com.etiya.searchservice.service;
 
+import co.elastic.clients.elasticsearch._types.FieldValue;
+import co.elastic.clients.elasticsearch._types.query_dsl.ChildScoreMode;
 import com.etiya.common.events.UpdateCustomerEvent;
 import com.etiya.searchservice.domain.Address;
 import com.etiya.searchservice.domain.BillingAccount;
 import com.etiya.searchservice.domain.ContactMedium;
 import com.etiya.searchservice.domain.CustomerSearch;
 import com.etiya.searchservice.repository.CustomerSearchRepository;
+import com.etiya.searchservice.service.dtos.SearchCustomerRequest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.elasticsearch.client.elc.NativeQuery;
+import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
+import org.springframework.data.elasticsearch.core.SearchHit;
+import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.stereotype.Service;
+import co.elastic.clients.elasticsearch._types.query_dsl.BoolQuery;
+import co.elastic.clients.elasticsearch._types.query_dsl.Query;
+import co.elastic.clients.elasticsearch._types.query_dsl.QueryBuilders;
+
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -20,9 +33,11 @@ import static java.util.Arrays.stream;
 public class CustomerSearchServiceImpl implements CustomerSearchService {
 
     private final CustomerSearchRepository customerSearchRepository;
+    private final ElasticsearchOperations elasticsearchOperations;
 
-    public CustomerSearchServiceImpl(CustomerSearchRepository customerSearchRepository) {
+    public CustomerSearchServiceImpl(CustomerSearchRepository customerSearchRepository, ElasticsearchOperations elasticsearchOperations) {
         this.customerSearchRepository = customerSearchRepository;
+        this.elasticsearchOperations = elasticsearchOperations;
     }
 
 
@@ -121,6 +136,142 @@ public class CustomerSearchServiceImpl implements CustomerSearchService {
     @Override
     public List<CustomerSearch> findByFirstNamePrefix(String prefix) {
         return customerSearchRepository.findByFirstNamePrefix(prefix);
+    }
+
+    private static boolean hasText(String s) {
+        return s != null && !s.trim().isEmpty();
+    }
+
+    private static String wc(String s) {
+        // wildcard için özel karakterleri kaçır, * ve ? kalsın
+        String esc = s.replaceAll("([\\\\+\\-!(){}\\[\\]^\"~:|&/])", "\\\\$1");
+        return "*" + esc.trim() + "*";
+    }
+
+
+    @Override
+    public List<CustomerSearch> dynamicSearch(SearchCustomerRequest filters, int page, int size) {
+
+        List<Query> mustClauses = new ArrayList<>();
+        List<Query> shouldClausesForGsm = new ArrayList<>();
+
+        // --- 1) Basit alanlar (keyword alt alanında, case-insensitive wildcard) ---
+
+        if (hasText(filters.getNatId())) {
+            mustClauses.add(Query.of(q -> q.wildcard(w -> w
+                    .field("nationalId.keyword")
+                    .value(wc(filters.getNatId()))
+                    .caseInsensitive(true)
+            )));
+        }
+
+        if (hasText(filters.getCustomerId())) {
+            mustClauses.add(Query.of(q -> q.wildcard(w -> w
+                    .field("customerNumber.keyword")
+                    .value(wc(filters.getCustomerId()))
+                    .caseInsensitive(true)
+            )));
+        }
+
+        if (hasText(filters.getOrderNumber())) {
+            mustClauses.add(Query.of(q -> q.wildcard(w -> w
+                    .field("orderNumber.keyword")
+                    .value(wc(filters.getOrderNumber()))
+                    .caseInsensitive(true)
+            )));
+        }
+
+        if (hasText(filters.getFirstName())) {
+            mustClauses.add(Query.of(q -> q.wildcard(w -> w
+                    .field("firstName.keyword")
+                    .value(wc(filters.getFirstName()))
+                    .caseInsensitive(true)
+            )));
+        }
+
+        if (hasText(filters.getLastName())) {
+            mustClauses.add(Query.of(q -> q.wildcard(w -> w
+                    .field("lastName.keyword")
+                    .value(wc(filters.getLastName()))
+                    .caseInsensitive(true)
+            )));
+        }
+
+        // --- 2) Nested alanlar ---
+
+        // BillingAccounts.accountNumber
+        if (hasText(filters.getAccountNumber())) {
+            Query nestedAccount = Query.of(q -> q.nested(n -> n
+                    .path("billingAccounts")
+                    .scoreMode(ChildScoreMode.Avg)
+                    .query(inner -> inner.wildcard(w -> w
+                            .field("billingAccounts.accountNumber.keyword")
+                            .value(wc(filters.getAccountNumber()))
+                            .caseInsensitive(true)
+                    ))
+            ));
+            mustClauses.add(nestedAccount);
+        }
+
+        // GSM: hem kök alan (gsmNumber.keyword) hem de contactMediums nested içinde ara (OR/should)
+        if (hasText(filters.getGsmNumber())) {
+            String digits = filters.getGsmNumber().replaceAll("\\D+", "").trim();
+
+            // a) root alanda
+            shouldClausesForGsm.add(Query.of(q -> q.wildcard(w -> w
+                    .field("gsmNumber.keyword")
+                    .value(wc(digits))
+                    .caseInsensitive(true)
+            )));
+
+            // b) nested contactMediums: type ∈ {mobile_phone, home_phone} AND value like *digits*
+            List<FieldValue> phoneTypes = List.of(
+                    FieldValue.of("mobile_phone"),
+                    FieldValue.of("home_phone")
+            );
+
+            Query nestedContact = Query.of(q -> q.nested(n -> n
+                    .path("contactMediums")
+                    .scoreMode(ChildScoreMode.Avg)
+                    .query(inner -> inner.bool(b -> b
+                            .must(m1 -> m1.terms(t -> t
+                                    .field("contactMediums.type.keyword")
+                                    .terms(tv -> tv.value(phoneTypes))
+                            ))
+                            .must(m2 -> m2.wildcard(w -> w
+                                    .field("contactMediums.value.keyword")
+                                    .value(wc(digits))
+                                    .caseInsensitive(true)
+                            ))
+                    ))
+            ));
+            shouldClausesForGsm.add(nestedContact);
+        }
+
+        // Deleted kayıtları dışla
+        Query mustNotDeleted = Query.of(q -> q.exists(e -> e.field("deletedDate")));
+
+        // Bool query’yi topla
+        Query finalQuery = Query.of(q -> q.bool(b -> {
+            if (!mustClauses.isEmpty()) b.must(mustClauses);
+            if (!shouldClausesForGsm.isEmpty()) b.must(s -> s.bool(sb -> sb.should(shouldClausesForGsm)));
+            b.mustNot(mn -> mn.bool(nb -> nb.must(mustNotDeleted)));
+            return b;
+        }));
+
+
+        NativeQuery searchQuery = NativeQuery.builder()
+                .withQuery(finalQuery)
+                .withPageable(PageRequest.of(page, size))   // ← burada parametre
+                .withTrackTotalHits(true)
+                .build();
+
+        SearchHits<CustomerSearch> hits = elasticsearchOperations.search(searchQuery, CustomerSearch.class);
+
+        return hits.stream()
+                .map(SearchHit::getContent)
+                .map(this::filterDeletedBillingAccounts)
+                .collect(Collectors.toList());
     }
 
     @Override

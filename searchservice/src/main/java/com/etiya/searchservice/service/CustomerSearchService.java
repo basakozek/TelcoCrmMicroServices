@@ -5,6 +5,7 @@ import com.etiya.searchservice.domain.Address;
 import com.etiya.searchservice.domain.BillingAccount;
 import com.etiya.searchservice.domain.ContactMedium;
 import com.etiya.searchservice.domain.CustomerSearch;
+import com.etiya.searchservice.service.dtos.SearchCustomerRequest;
 
 import java.util.List;
 
@@ -22,6 +23,7 @@ public interface CustomerSearchService {
     List<CustomerSearch> findByDateOfBirthBetween(String startDate, String endDate);
     List<CustomerSearch> findByCityAndLastName(String city, String lastName);
     List<CustomerSearch> findByFirstNamePrefix(String prefix);
+    List<CustomerSearch> dynamicSearch(SearchCustomerRequest filters, int page, int size);
 
     // Address ops
     void addAddress(String customerId, Address address);

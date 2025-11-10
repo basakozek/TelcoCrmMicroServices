@@ -2,6 +2,7 @@ package com.etiya.searchservice.controller;
 
 import com.etiya.searchservice.domain.CustomerSearch;
 import com.etiya.searchservice.service.CustomerSearchService;
+import com.etiya.searchservice.service.dtos.SearchCustomerRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -72,6 +73,16 @@ public class CustomerSearchController {
     @ResponseStatus(HttpStatus.OK)
     public List<CustomerSearch> searchByFirstNamePrefix(@RequestParam String prefix) {
         return customerSearchService.findByFirstNamePrefix(prefix);
+    }
+
+    @GetMapping("/dynamic-search")
+    @ResponseStatus(HttpStatus.OK)
+    public List<CustomerSearch> dynamicSearch(
+            @ModelAttribute SearchCustomerRequest filters,
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "20") int size   // istediğin default
+    ) {
+        return customerSearchService.dynamicSearch(filters, page, size);
     }
 
 }

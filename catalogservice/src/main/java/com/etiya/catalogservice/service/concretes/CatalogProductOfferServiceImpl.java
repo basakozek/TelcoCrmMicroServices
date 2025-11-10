@@ -2,6 +2,7 @@ package com.etiya.catalogservice.service.concretes;
 
 import com.etiya.catalogservice.domain.entities.CatalogProductOffer;
 import com.etiya.catalogservice.repository.CatalogProductOfferRepository;
+import com.etiya.catalogservice.repository.CatalogRepository;
 import com.etiya.catalogservice.service.abstracts.CatalogProductOfferService;
 import com.etiya.catalogservice.service.dtos.response.catalogProductOffer.CatalogProductOfferWithDetailResponse;
 import com.etiya.catalogservice.service.dtos.response.catalogProductOffer.GetListCatalogProductOfferResponse;
@@ -16,9 +17,11 @@ import java.util.List;
 public class CatalogProductOfferServiceImpl implements CatalogProductOfferService {
 
     private final CatalogProductOfferRepository catalogProductOfferRepository;
+    private final CatalogRepository catalogRepository;
 
-    public CatalogProductOfferServiceImpl(CatalogProductOfferRepository catalogProductOfferRepository) {
+    public CatalogProductOfferServiceImpl(CatalogProductOfferRepository catalogProductOfferRepository, CatalogRepository catalogRepository) {
         this.catalogProductOfferRepository = catalogProductOfferRepository;
+        this.catalogRepository = catalogRepository;
     }
 
 
@@ -31,13 +34,34 @@ public class CatalogProductOfferServiceImpl implements CatalogProductOfferServic
 
     @Override
     public List<CatalogProductOfferWithDetailResponse> getByCatalogId(int catalogId) {
-        var cpos = catalogProductOfferRepository.findAllByCatalogIdWithDetail(catalogId);
+        // Eski davranış (tek catalog)
+        var cpos = catalogProductOfferRepository.findAllByCatalogIdsWithDetail(List.of(catalogId));
+        return CatalogProductOfferMapper.INSTANCE.toResponse(cpos);
+    }
+
+    // YENİ: includeChildren
+    public List<CatalogProductOfferWithDetailResponse> getByCatalogId(int catalogId, boolean includeChildren) {
+        List<Integer> ids = includeChildren
+                ? catalogRepository.findSubtreeIds(catalogId)
+                : List.of(catalogId);
+
+        var cpos = catalogProductOfferRepository.findAllByCatalogIdsWithDetail(ids);
         return CatalogProductOfferMapper.INSTANCE.toResponse(cpos);
     }
 
     @Override
     public List<CatalogProductOfferWithDetailResponse> getActiveByCatalogId(int catalogId) {
-        var cpos = catalogProductOfferRepository.findActiveByCatalogIdWithDetail(catalogId, LocalDateTime.now());
+        var cpos = catalogProductOfferRepository.findActiveByCatalogIdWithDetail(catalogId, java.time.LocalDateTime.now());
+        return CatalogProductOfferMapper.INSTANCE.toResponse(cpos);
+    }
+
+    // YENİ: aktif + includeChildren
+    public List<CatalogProductOfferWithDetailResponse> getActiveByCatalogId(int catalogId, boolean includeChildren) {
+        List<Integer> ids = includeChildren
+                ? catalogRepository.findSubtreeIds(catalogId)
+                : List.of(catalogId);
+
+        var cpos = catalogProductOfferRepository.findActiveByCatalogIdsWithDetail(ids, java.time.LocalDateTime.now());
         return CatalogProductOfferMapper.INSTANCE.toResponse(cpos);
     }
 }
