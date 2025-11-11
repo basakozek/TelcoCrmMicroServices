@@ -10,33 +10,35 @@ import java.util.Map;
 @Repository
 public class BasketRepository {
 
-    public static final String Key = "BASKET";
+    public static final String KEY = "BASKET";
 
-    private final RedisTemplate<String, Object> redisTemplate;
     private final HashOperations<String, String, Basket> basketHashOperations;
 
-
-
     public BasketRepository(RedisTemplate<String, Object> redisTemplate) {
-        this.redisTemplate = redisTemplate;
         this.basketHashOperations = redisTemplate.opsForHash();
     }
-    // billing account'a göre yapılacak
-    public void addItem(Basket basket) {
-        this.basketHashOperations.put(Key,basket.getId() +"_" + basket.getBillingAccId(), basket);
 
+    public void saveBasket(int billingAccId, Basket basket) {
+        if (basket == null) return;
+        // Field = billingAccId → tek kayıt
+        basketHashOperations.put(KEY, String.valueOf(billingAccId), basket);
     }
+
     public Basket getBasketByBillingAccountId(int billingAccId) {
-        return basketHashOperations.entries(Key).values().stream()
-                .filter(basket -> billingAccId == basket.getBillingAccId()).findFirst().orElse(null);
+        return basketHashOperations.get(KEY, String.valueOf(billingAccId));
     }
 
-    public Map<String,Basket> getAll(){
-        return this.basketHashOperations.entries(Key);
+    public void deleteBasket(int billingAccId) {
+        basketHashOperations.delete(KEY, String.valueOf(billingAccId));
+    }
+
+
+    public Map<String, Basket> getAll() {
+        return basketHashOperations.entries(KEY);
     }
 
     public Map<String, Basket> getBasketMap() {
-        return this.basketHashOperations.entries(Key);
+        return this.basketHashOperations.entries(KEY);
     }
 
 

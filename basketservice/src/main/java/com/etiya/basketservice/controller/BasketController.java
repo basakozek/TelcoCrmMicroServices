@@ -3,7 +3,10 @@ package com.etiya.basketservice.controller;
 import com.etiya.basketservice.domain.Basket;
 import com.etiya.basketservice.service.abstracts.BasketService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Map;
 
@@ -47,10 +50,37 @@ public class BasketController {
     public void clearBasket(@PathVariable int billingAccountId) {
         basketService.clearBasket(billingAccountId);
     }
+    @PostMapping("/campaign-products")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void addByCampaignProduct(@RequestParam int billingAccId,
+                                     @RequestParam int campaignProductId,
+                                     @RequestParam(name = "qty", required = false, defaultValue = "1") int qty) {
+        for (int i = 0; i < Math.max(1, qty); i++) {
+            basketService.addByCampaignProduct(billingAccId, campaignProductId);
+        }
+    }
 
-    @GetMapping("/by-billing/{billingAccountId}")
-    @ResponseStatus(HttpStatus.OK)
-    public Basket getByBillingAccountId(@PathVariable int billingAccountId) {
-        return basketService.getByBillingAccountId(billingAccountId);
+    // basketservice/controller/BasketController.java
+
+    // import org.springframework.http.ResponseEntity;
+
+    @GetMapping("/{billingAccountId}")
+    public ResponseEntity<Basket> getByBillingAccount(@PathVariable int billingAccountId) {
+        Basket b = basketService.getByBillingAccountId(billingAccountId);
+        if (b == null) {
+            return ResponseEntity.noContent().build(); // 204, body yok
+        }
+        return ResponseEntity.ok(b); // 200
+    }
+
+
+
+    // basketservice/controller/BasketController.java
+
+    @PostMapping("/campaigns")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void addByCampaign(@RequestParam int billingAccId,
+                              @RequestParam int campaignId) {
+        basketService.addByCampaign(billingAccId, campaignId);
     }
 }

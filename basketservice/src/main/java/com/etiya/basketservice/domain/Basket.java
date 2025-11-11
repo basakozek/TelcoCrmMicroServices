@@ -15,6 +15,9 @@ public class Basket implements Serializable {
 
     private double totalPrice;
 
+    private Integer campaignId;
+    private String campaignName;
+
     private List<BasketItem> basketItems;
 
     public Basket(){
@@ -52,5 +55,21 @@ public class Basket implements Serializable {
 
     public void setBasketItems(List<BasketItem> basketItems) {
         this.basketItems = basketItems;
+    }
+
+    public Integer getCampaignId() {
+        return campaignId;
+    }
+
+    public void setCampaignId(Integer campaignId) {
+        this.campaignId = campaignId;
+    }
+
+    public String getCampaignName() {
+        return campaignName;
+    }
+
+    public void setCampaignName(String campaignName) {
+        this.campaignName = campaignName;
     }
 }
