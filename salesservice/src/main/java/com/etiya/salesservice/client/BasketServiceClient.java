@@ -11,6 +11,6 @@ public interface BasketServiceClient {
     /**
      * BasketController'daki yeni endpoint'i çağırır.
      */
-    @GetMapping("/api/baskets/by-billing/{billingAccountId}")
+    @GetMapping("/api/baskets/{billingAccountId}")
     BasketDTO getByBillingAccountId(@PathVariable int billingAccountId);
 }

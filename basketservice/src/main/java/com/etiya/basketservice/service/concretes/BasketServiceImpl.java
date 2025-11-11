@@ -137,13 +137,6 @@ public class BasketServiceImpl implements BasketService {
     public void clearBasket(int billingAccountId) {
         basketRepository.deleteBasket(billingAccountId);
     }
-
-    @Override
-    public Basket getByBillingAccountId(int billingAccountId) {
-        return basketRepository.getBasketByBillingAccountId(billingAccountId);
-    }
-
-
     // basketservice/service/concretes/BasketServiceImpl.java
 
     @Override

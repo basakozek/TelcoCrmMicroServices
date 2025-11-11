@@ -16,6 +16,4 @@ public interface BasketService {
     void addByCampaign(int billingAccountId, int campaignId);
     Map<String, Basket> getAll();
 
-    Basket getByBillingAccountId(int billingAccountId);
-
 }
