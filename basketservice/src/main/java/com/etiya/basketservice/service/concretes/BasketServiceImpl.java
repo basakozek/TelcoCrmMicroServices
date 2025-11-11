@@ -91,53 +91,80 @@ public class BasketServiceImpl implements BasketService {
         recalcBasketTotal(basket);
 
         // 7. Sepeti Redis'e kaydet
-        basketRepository.addItem(basket);
+        basketRepository.saveBasket(basket.getBillingAccId(), basket);
     }
+
+    @Override
+    public void addByCampaignProduct(int billingAccountId, int campaignProductId) {
+        var all = catalogServiceClient.getAllActiveCampaignProducts();
+        var target = all.stream()
+                .filter(cp -> cp.getCampaignProductId() == campaignProductId)
+                .findFirst()
+                .orElseThrow(() -> new BusinessException("Campaign product not found: " + campaignProductId));
+
+        this.add(billingAccountId, target.getProductId());
+
+        var basket = basketRepository.getBasketByBillingAccountId(billingAccountId);
+        if (basket != null) { // 👈 basket null değilse meta yaz
+            basket.setCampaignId(target.getCampaignId());
+            basket.setCampaignName(target.getCampaignName());
+            basketRepository.saveBasket(basket.getBillingAccId(), basket);
+        }
+    }
+
 
     @Override
     public void deleteItem(int billingAccountId, String basketItemId) {
-        // 1. O anki billingAccount'a ait sepeti Redis'ten getir.
         var basket = basketRepository.getBasketByBillingAccountId(billingAccountId);
-        if (basket == null) {
-            // Sepet zaten yoksa, silinecek bir şey de yoktur.
-            return;
-        }
-        // 2. Sepetteki ürün listesinde (basket.getBasketItems()),
-        //    controller'dan gelen 'basketItemId' ile eşleşen ürünü bul.
-        Optional<BasketItem> itemToRemove = basket.getBasketItems().stream()
-                .filter(item -> item.getId().equals(basketItemId))
-                .findFirst();
+        if (basket == null) return;
 
-        // 3. Ürün bulunduysa...
-        if (itemToRemove.isPresent()) {
-            // 3a. Ürünü sepetin listesinden çıkar.
-            basket.getBasketItems().remove(itemToRemove.get());
-            // 3b. Sepetin toplam fiyatını (totalPrice) güncel (azalan) fiyata göre yeniden hesapla.
-            recalcBasketTotal(basket);
-            // 3c. Sepetin (artık ürünü silinmiş olan) GÜNCEL halini Redis'e geri kaydet.
-            // Not: 'addItem' metodu, sepetin ID'sini (basket.getId()) key olarak kullandığı için
-            // var olan sepetin üzerine yazar (yani update/güncelleme işlemi yapar).
-            basketRepository.addItem(basket); //
-        } else {
+        boolean removed = basket.getBasketItems().removeIf(it -> it.getId().equals(basketItemId));
+        if (!removed) {
             throw new BusinessException("Basket item not found with id: " + basketItemId);
         }
+
+        recalcBasketTotal(basket);
+
+        if (basket.getBasketItems().isEmpty()) {
+            basketRepository.deleteBasket(billingAccountId);   // 👈 boşsa sil
+        } else {
+            basketRepository.saveBasket(billingAccountId, basket); // 👈 güncelle
+        }
     }
+
 
     @Override
     public void clearBasket(int billingAccountId) {
-        // 1. O anki billingAccount'a ait sepeti Redis'ten getir.
-        var basket = basketRepository.getBasketByBillingAccountId(billingAccountId);
-        // 2. Sepet varsa...
-        if (basket != null) {
-            // 2a. Sepetteki ürün listesini (basket.getBasketItems()) tamamen temizle (.clear()).
-            basket.getBasketItems().clear();
-            // 2b. Sepetin toplam fiyatını 0 olarak yeniden hesapla.
-            recalcBasketTotal(basket);
-            // Sepetin boş halini kaydet
-            basketRepository.addItem(basket); //
-        }
-        // Sepet yoksa (basket == null) zaten boş demektir, bir şey yapmaya gerek yok.
+        basketRepository.deleteBasket(billingAccountId);
     }
+    // basketservice/service/concretes/BasketServiceImpl.java
+
+    @Override
+    public void addByCampaign(int billingAccountId, int campaignId) {
+        var all = catalogServiceClient.getAllActiveCampaignProducts(); // tüm aktif campaign-product ilişkileri
+        var itemsOfCampaign = all.stream()
+                .filter(x -> x.getCampaignId() == campaignId)
+                .toList();
+
+        if (itemsOfCampaign.isEmpty()) {
+            throw new BusinessException("No active items for campaignId=" + campaignId);
+        }
+
+        // Kampanyadaki TÜM productOffer’ları sepete ekle
+        for (var cp : itemsOfCampaign) {
+            this.add(billingAccountId, cp.getProductId());
+        }
+
+        // Sepet meta bilgisi (kampanya ismi/id)
+        var basket = basketRepository.getBasketByBillingAccountId(billingAccountId);
+        if (basket != null) {
+            basket.setCampaignId(campaignId);
+            // Aynı kampanya olduğundan ilk elemanın adı yeterli
+            basket.setCampaignName(itemsOfCampaign.get(0).getCampaignName());
+            basketRepository.saveBasket(basket.getBillingAccId(), basket);
+        }
+    }
+
 
     private void recalcBasketTotal(Basket basket) {
         double total = 0.0;
@@ -155,5 +182,17 @@ public class BasketServiceImpl implements BasketService {
     @Override
     public Map<String, Basket> getAll() {
         return basketRepository.getAll();
+    }
+
+    @Override
+    public Basket getByBillingAccountId(int billingAccountId) {
+        // Repository'de bu metot zaten mevcuttu, onu çağırıyoruz.
+        Basket basket = basketRepository.getBasketByBillingAccountId(billingAccountId);
+
+        if (basket == null) {
+            throw new BusinessException("Basket not found for billing account: " + billingAccountId);
+        }
+
+        return basket;
     }
 }
