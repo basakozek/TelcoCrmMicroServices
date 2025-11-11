@@ -14,4 +14,7 @@ public interface BasketService {
     void clearBasket(int billingAccountId);
 
     Map<String, Basket> getAll();
+
+    Basket getByBillingAccountId(int billingAccountId);
+
 }

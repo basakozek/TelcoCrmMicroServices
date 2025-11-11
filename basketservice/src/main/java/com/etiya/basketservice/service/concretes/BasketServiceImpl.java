@@ -156,4 +156,16 @@ public class BasketServiceImpl implements BasketService {
     public Map<String, Basket> getAll() {
         return basketRepository.getAll();
     }
+
+    @Override
+    public Basket getByBillingAccountId(int billingAccountId) {
+        // Repository'de bu metot zaten mevcuttu, onu çağırıyoruz.
+        Basket basket = basketRepository.getBasketByBillingAccountId(billingAccountId);
+
+        if (basket == null) {
+            throw new BusinessException("Basket not found for billing account: " + billingAccountId);
+        }
+
+        return basket;
+    }
 }

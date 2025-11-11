@@ -47,4 +47,10 @@ public class BasketController {
     public void clearBasket(@PathVariable int billingAccountId) {
         basketService.clearBasket(billingAccountId);
     }
+
+    @GetMapping("/by-billing/{billingAccountId}")
+    @ResponseStatus(HttpStatus.OK)
+    public Basket getByBillingAccountId(@PathVariable int billingAccountId) {
+        return basketService.getByBillingAccountId(billingAccountId);
+    }
 }
