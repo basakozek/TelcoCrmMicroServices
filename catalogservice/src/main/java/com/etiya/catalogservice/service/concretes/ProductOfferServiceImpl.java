@@ -8,6 +8,7 @@ import com.etiya.catalogservice.service.abstracts.ProductOfferService;
 import com.etiya.catalogservice.service.dtos.request.productOffer.CreateProductOfferRequest;
 import com.etiya.catalogservice.service.dtos.response.productOffer.CreatedProductOfferResponse;
 import com.etiya.catalogservice.service.dtos.response.productOffer.GetListProductOfferResponse;
+import com.etiya.catalogservice.service.dtos.response.productOffer.GetListSearchProductOfferResponse;
 import com.etiya.common.crosscuttingconcerns.exceptions.types.BusinessException;
 import com.etiya.common.responses.ActiveProductOfferResponse;
 import com.etiya.common.responses.ProductResponse;
@@ -99,6 +100,31 @@ public class ProductOfferServiceImpl implements ProductOfferService {
         response.setProductName(offer.getName());
         response.setPrice(offer.getPrice()); // Liste fiyatını dönüyoruz
         return response;
+    }
+
+    @Override
+    public List<GetListSearchProductOfferResponse> searchById(String id) {
+        if (id == null || id.isBlank()) {
+            throw new BusinessException("Product Offer ID cannot be empty.");
+        }
+        return repository.findById(id)
+                .map(po -> List.of(new GetListSearchProductOfferResponse(po.getId(), po.getName())))
+                .orElseThrow(() -> new BusinessException("No product offer found with the given ID."));
+    }
+
+    @Override
+    public List<GetListSearchProductOfferResponse> searchByName(String name) {
+        if (name == null || name.isBlank()) {
+            throw new BusinessException("Product Offer name cannot be empty.");
+        }
+        List<ProductOffer> offers = repository.findAllByNameContainingIgnoreCase(name);
+
+        if (offers.isEmpty()) {
+            throw new BusinessException("No product offers found for the given name.");
+        }
+        return offers.stream()
+                .map(po -> new GetListSearchProductOfferResponse(po.getId(), po.getName()))
+                .toList();
     }
 
 

@@ -3,7 +3,7 @@ package com.etiya.catalogservice.repository;
 import com.etiya.catalogservice.domain.entities.ProductOffer;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-
+import java.util.List;
 import java.util.Optional;
 
 public interface ProductOfferRepository extends JpaRepository<ProductOffer, String> {
@@ -25,4 +25,5 @@ public interface ProductOfferRepository extends JpaRepository<ProductOffer, Stri
            """)
     java.util.List<ProductOffer> findAllActive();
 
+    List<ProductOffer> findAllByNameContainingIgnoreCase(String name);
 }
