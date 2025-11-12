@@ -3,6 +3,7 @@ package com.etiya.catalogservice.controller;
 import com.etiya.catalogservice.service.abstracts.CampaignProductOfferService;
 import com.etiya.catalogservice.service.dtos.request.campaignProduct.CreateCampaignProductRequest;
 import com.etiya.catalogservice.service.dtos.response.campaignProduct.CreatedCampaignProductResponse;
+import com.etiya.catalogservice.service.dtos.response.campaignProduct.GetCampaignProductOfferResponse;
 import com.etiya.common.responses.ActiveCampaignProductResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -47,6 +48,16 @@ public class CampaignProductController {
                     r.setDiscountRate(0.0);
                     return r;
                 });
+    }
+
+    @GetMapping("/search/by-id")
+    public List<GetCampaignProductOfferResponse> searchByCampaignId(@RequestParam int campaignId) {
+        return service.searchByCampaignId(campaignId);
+    }
+
+    @GetMapping("/search/by-name")
+    public List<GetCampaignProductOfferResponse> searchByCampaignName(@RequestParam String campaignName) {
+        return service.searchByCampaignName(campaignName);
     }
 
 }

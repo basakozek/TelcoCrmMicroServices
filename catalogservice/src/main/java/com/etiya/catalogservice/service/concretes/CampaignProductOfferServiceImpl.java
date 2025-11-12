@@ -9,6 +9,7 @@ import com.etiya.catalogservice.repository.ProductOfferRepository;
 import com.etiya.catalogservice.service.abstracts.CampaignProductOfferService;
 import com.etiya.catalogservice.service.dtos.request.campaignProduct.CreateCampaignProductRequest;
 import com.etiya.catalogservice.service.dtos.response.campaignProduct.CreatedCampaignProductResponse;
+import com.etiya.catalogservice.service.dtos.response.campaignProduct.GetCampaignProductOfferResponse;
 import com.etiya.common.crosscuttingconcerns.exceptions.types.BusinessException;
 import com.etiya.common.responses.ActiveCampaignProductResponse;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -92,5 +93,39 @@ public class CampaignProductOfferServiceImpl implements CampaignProductOfferServ
 
     private double normalize(double rate) {
         return rate > 1.0 ? rate / 100.0 : rate;
+    }
+
+    @Override
+    public List<GetCampaignProductOfferResponse> searchByCampaignId(int campaignId) {
+        List<CampaignProductOffer> list = repository.findAllByCampaignId(campaignId);
+
+        if (list.isEmpty()) {
+            throw new BusinessException("No products found for this campaign ID.");
+        }
+
+        return list.stream()
+                .map(cp -> new GetCampaignProductOfferResponse(
+                        cp.getCampaign().getId(),
+                        cp.getProductOffer().getId(),
+                        cp.getProductOffer().getName()
+                ))
+                .toList();
+    }
+
+    @Override
+    public List<GetCampaignProductOfferResponse> searchByCampaignName(String campaignName) {
+        List<CampaignProductOffer> list = repository.findAllByCampaignNameContainingIgnoreCase(campaignName);
+
+        if (list.isEmpty()) {
+            throw new BusinessException("No products found for this campaign name.");
+        }
+
+        return list.stream()
+                .map(cp -> new GetCampaignProductOfferResponse(
+                        cp.getCampaign().getId(),
+                        cp.getProductOffer().getId(),
+                        cp.getProductOffer().getName()
+                ))
+                .toList();
     }
 }

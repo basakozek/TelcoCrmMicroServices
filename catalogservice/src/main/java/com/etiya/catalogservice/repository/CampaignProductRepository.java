@@ -25,4 +25,19 @@ public interface CampaignProductRepository extends JpaRepository<CampaignProduct
            """)
     List<CampaignProductOffer> findAllActive();
 
+    @Query("""
+       select cp from CampaignProductOffer cp
+       join fetch cp.campaign c
+       join fetch cp.productOffer p
+       where c.id = :campaignId
+       """)
+    List<CampaignProductOffer> findAllByCampaignId(int campaignId);
+
+    @Query("""
+       select cp from CampaignProductOffer cp
+       join fetch cp.campaign c
+       join fetch cp.productOffer p
+       where lower(c.name) like lower(concat('%', :campaignName, '%'))
+       """)
+    List<CampaignProductOffer> findAllByCampaignNameContainingIgnoreCase(String campaignName);
 }
