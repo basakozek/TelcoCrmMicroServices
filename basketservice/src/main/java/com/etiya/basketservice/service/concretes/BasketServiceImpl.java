@@ -132,6 +132,43 @@ public class BasketServiceImpl implements BasketService {
         }
     }
 
+    @Override
+    public void removeCampaignItems(int billingAccountId) {
+        Basket basket = basketRepository.getBasketByBillingAccountId(billingAccountId);
+        if (basket == null) return;
+
+        Integer activeCid = basket.getCampaignId();
+        if (activeCid == null) return;
+
+        // 1) Aktif kampanyanın campaignProductId setini çıkar
+        var all = catalogServiceClient.getAllActiveCampaignProducts(); // ActiveCampaignProductResponse listesi
+        var toRemoveCpid = all.stream()
+                .filter(cp -> cp.getCampaignId() == activeCid)
+                .map(cp -> cp.getCampaignProductId())
+                .collect(java.util.stream.Collectors.toSet());
+
+        // 2) Sadece aktif kampanyaya ait olanları sil
+        basket.getBasketItems().removeIf(it -> {
+            Integer cpid = it.getCampaignProductId();
+            return cpid != null && cpid > 0 && toRemoveCpid.contains(cpid);
+        });
+
+        // 3) Kampanya meta’yı temizle (sadece bu kampanyaya dair kart için)
+        basket.setCampaignId(null);
+        basket.setCampaignName(null);
+
+        // 4) Sepet boşaldıysa tamamen sil; değilse toplamı güncelle ve kaydet
+        if (basket.getBasketItems().isEmpty()) {
+            basketRepository.deleteBasket(billingAccountId);
+            return;
+        }
+
+        recalcBasketTotal(basket);
+        basketRepository.saveBasket(billingAccountId, basket);
+    }
+
+
+
 
     @Override
     public void clearBasket(int billingAccountId) {
@@ -187,12 +224,6 @@ public class BasketServiceImpl implements BasketService {
     @Override
     public Basket getByBillingAccountId(int billingAccountId) {
         // Repository'de bu metot zaten mevcuttu, onu çağırıyoruz.
-        Basket basket = basketRepository.getBasketByBillingAccountId(billingAccountId);
-
-        if (basket == null) {
-            throw new BusinessException("Basket not found for billing account: " + billingAccountId);
-        }
-
-        return basket;
+        return basketRepository.getBasketByBillingAccountId(billingAccountId);
     }
 }

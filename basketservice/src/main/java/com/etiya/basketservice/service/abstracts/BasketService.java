@@ -9,6 +9,7 @@ public interface BasketService {
     void addByCampaignProduct(int billingAccountId, int campaignProductId);
     // YENİ: Sepetten tek bir kalemi siler (BasketItem'ın kendi ID'si ile)
     void deleteItem(int billingAccountId, String basketItemId);
+    void removeCampaignItems(int billingAccountId);
 
     // YENİ: Belirli bir billingAccount'a ait sepeti temizler
     void clearBasket(int billingAccountId);
