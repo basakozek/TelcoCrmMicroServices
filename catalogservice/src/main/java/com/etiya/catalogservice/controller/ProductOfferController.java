@@ -3,6 +3,7 @@ package com.etiya.catalogservice.controller;
 import com.etiya.catalogservice.service.abstracts.ProductOfferService;
 import com.etiya.catalogservice.service.dtos.request.productOffer.CreateProductOfferRequest;
 import com.etiya.catalogservice.service.dtos.response.productOffer.CreatedProductOfferResponse;
+import com.etiya.catalogservice.service.dtos.response.productOffer.GetListSearchProductOfferResponse;
 import com.etiya.common.responses.ActiveProductOfferResponse;
 import com.etiya.common.responses.ProductResponse;
 import jakarta.validation.Valid;
@@ -56,5 +57,15 @@ public class ProductOfferController {
     }
 
     // NOT: getList, getById, update, delete endpoint'lerini de buraya ekleyebiliriz
+    @GetMapping("/search/by-id")
+    @ResponseStatus(HttpStatus.OK)
+    public List<GetListSearchProductOfferResponse> searchById(@RequestParam String id) {
+        return service.searchById(id);
+    }
 
+    @GetMapping("/search/by-name")
+    @ResponseStatus(HttpStatus.OK)
+    public List<GetListSearchProductOfferResponse> searchByName(@RequestParam String name) {
+        return service.searchByName(name);
+    }
 }

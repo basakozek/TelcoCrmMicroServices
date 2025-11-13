@@ -83,4 +83,11 @@ public class BasketController {
                               @RequestParam int campaignId) {
         basketService.addByCampaign(billingAccId, campaignId);
     }
+
+    @DeleteMapping("/{billingAccountId}/campaign")
+    @ResponseStatus(HttpStatus.OK)
+    public void removeCampaign(@PathVariable int billingAccountId) {
+        basketService.removeCampaignItems(billingAccountId);
+    }
+
 }
