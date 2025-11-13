@@ -224,10 +224,9 @@ public class CustomerSearchServiceImpl implements CustomerSearchService {
                     .caseInsensitive(true)
             )));
 
-            // b) nested contactMediums: type ∈ {mobile_phone, home_phone} AND value like *digits*
+            // b) nested contactMediums: type ∈ {mobile_phone} AND value like *digits*
             List<FieldValue> phoneTypes = List.of(
-                    FieldValue.of("mobile_phone"),
-                    FieldValue.of("home_phone")
+                    FieldValue.of("mobile_phone")
             );
 
             Query nestedContact = Query.of(q -> q.nested(n -> n
