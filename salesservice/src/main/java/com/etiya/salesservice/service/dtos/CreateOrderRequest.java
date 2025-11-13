@@ -13,4 +13,5 @@ import java.util.List;
 public class CreateOrderRequest {
     private int billingAccountId;
     private List<ProductConfigurationDTO> configurations;
+    private int addressId;
 }
