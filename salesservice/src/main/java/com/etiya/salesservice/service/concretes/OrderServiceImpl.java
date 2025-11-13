@@ -53,6 +53,7 @@ public class OrderServiceImpl implements OrderService {
         Order order = new Order();
         order.setBillingAccId(String.valueOf(basket.getBillingAccId()));
         order.setTotalPrice(basket.getTotalPrice());
+        order.setAddressId(request.getAddressId());
 
         // Sepet kalemlerini sipariş kalemlerine (OrderItem) dönüştür
         List<OrderItem> orderItems = basket.getBasketItems().stream()
@@ -91,6 +92,7 @@ public class OrderServiceImpl implements OrderService {
             product.setProductOfferId(item.getProductId()); // "71233", "202610" vs.
             product.setProductOfferName(item.getProductName());
             product.setStatus("Active"); // Veya aktivasyon gerekiyorsa "Pending_Activation"
+            product.setAddressId(request.getAddressId());
 
             // Ürüne ait (DOMAINE çevrilmiş) konfigürasyon listesini Map'ten al
             List<ProductConfiguration> configs = configMap.get(item.getProductId());

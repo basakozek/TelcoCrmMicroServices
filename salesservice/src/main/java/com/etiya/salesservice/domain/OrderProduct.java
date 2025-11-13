@@ -30,6 +30,9 @@ public class OrderProduct {
     @Field(name = "status")
     private String status; // Örn: "Active", "Pending_Activation", "Deactive"
 
+    @Field(name = "addressId")
+    private int addressId;
+
     // Dinamik konfigürasyon verileri (XDSL No, Modem SN vb.)
     @Field(name = "configuration")
     private List<ProductConfiguration> configuration;

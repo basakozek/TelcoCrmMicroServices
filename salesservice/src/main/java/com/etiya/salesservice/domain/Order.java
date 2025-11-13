@@ -28,6 +28,9 @@ public class Order {
     @Field(name = "totalPrice")
     private double totalPrice;
 
+    @Field(name = "addressId")
+    private int addressId;
+
     private List<OrderItem> orderItems;
 
     public Order(){
