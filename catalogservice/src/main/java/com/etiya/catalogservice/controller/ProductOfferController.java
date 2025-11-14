@@ -1,7 +1,9 @@
 package com.etiya.catalogservice.controller;
 
+import com.etiya.catalogservice.service.abstracts.ProductConfigMetaService;
 import com.etiya.catalogservice.service.abstracts.ProductOfferService;
 import com.etiya.catalogservice.service.dtos.request.productOffer.CreateProductOfferRequest;
+import com.etiya.catalogservice.service.dtos.response.productConfig.ProductConfigMetaResponse;
 import com.etiya.catalogservice.service.dtos.response.productOffer.CreatedProductOfferResponse;
 import com.etiya.catalogservice.service.dtos.response.productOffer.GetListSearchProductOfferResponse;
 import com.etiya.common.responses.ActiveProductOfferResponse;
@@ -17,9 +19,11 @@ import java.util.List;
 public class ProductOfferController {
 
     private final ProductOfferService service;
+    private final ProductConfigMetaService productConfigMetaService;
 
-    public ProductOfferController(ProductOfferService service) {
+    public ProductOfferController(ProductOfferService service, ProductConfigMetaService productConfigMetaService) {
         this.service = service;
+        this.productConfigMetaService = productConfigMetaService;
     }
 
     @PostMapping
@@ -67,5 +71,11 @@ public class ProductOfferController {
     @ResponseStatus(HttpStatus.OK)
     public List<GetListSearchProductOfferResponse> searchByName(@RequestParam String name) {
         return service.searchByName(name);
+    }
+
+
+    @GetMapping("/{id}/config-meta")
+    public ProductConfigMetaResponse getConfigMeta(@PathVariable String id) {
+        return productConfigMetaService.getConfigMeta(id);
     }
 }
