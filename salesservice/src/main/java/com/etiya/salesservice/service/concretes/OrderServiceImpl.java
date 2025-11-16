@@ -10,10 +10,7 @@ import com.etiya.salesservice.domain.ProductConfiguration;
 import com.etiya.salesservice.repository.CustomerProductRepository;
 import com.etiya.salesservice.repository.OrderRepository;
 import com.etiya.salesservice.service.abstracts.OrderService;
-import com.etiya.salesservice.service.dtos.BasketDTO;
-import com.etiya.salesservice.service.dtos.BasketItemDTO;
-import com.etiya.salesservice.service.dtos.ConfigurationPair;
-import com.etiya.salesservice.service.dtos.CreateOrderRequest;
+import com.etiya.salesservice.service.dtos.*;
 import com.etiya.salesservice.transport.kafka.producer.ClearBasketProducer;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -107,7 +104,23 @@ public class OrderServiceImpl implements OrderService {
         // --- 4. ADIM: TODO 2'yi ÇÖZ (Sepeti Temizle Event'i Fırlat) ---
         clearBasketProducer.produceClearBasketEvent(new ClearBasketEvent(request.getBillingAccountId()));
     }
-        // TODO: Bu alanda basketservice tarafına istek atılıp sepetteki veriyi sişariş tarafına göndermek
+
+    @Override
+    public List<BillingAccountProductResponse> getProductsForBillingAccount(int billingAccountId) {
+
+        List<OrderProduct> products = customerProductRepository.findByBillingAccountId(billingAccountId);
+
+        // 2. DTO mapping
+        return products.stream()
+                .map(product -> new BillingAccountProductResponse(
+                        product.getProductOfferId(),
+                        product.getProductOfferName(),
+                        product.getStatus()
+                ))
+                .collect(Collectors.toList());
+    }
+
+    // TODO: Bu alanda basketservice tarafına istek atılıp sepetteki veriyi sişariş tarafına göndermek
         // => basketServiceClient.getByBillingAccoubtId(billingAccountId)
 
         // TODO: Sipariş onaylandıktan sonra basket service taradına sepetin boşaltılması için event fırlatılacak

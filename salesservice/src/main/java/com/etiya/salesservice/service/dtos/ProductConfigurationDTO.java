@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-// 2. ADIM: Gelen konfigürasyon listesinin iç yapısı
+//ADIM: Gelen konfigürasyon listesinin iç yapısı
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
