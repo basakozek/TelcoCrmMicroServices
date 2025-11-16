@@ -25,7 +25,7 @@ public class CreateBillingAccountRequest {
     private String accountNumber;
 
     @NotBlank(message = Messages.BillingAccountAccountNameNotBlank)
-    @Length(min = 3, max = 50, message = Messages.BillingAccountAccountNameLength)
+    @Length(min = 2, max = 50, message = Messages.BillingAccountAccountNameLength)
     @Pattern(regexp = "^[\\p{L}\\p{Nd} -]+$", message= Messages.BillingAccountAccountNamePattern)
     private String accountName;
 }
