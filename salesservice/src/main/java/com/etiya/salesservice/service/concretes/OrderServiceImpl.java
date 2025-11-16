@@ -120,6 +120,21 @@ public class OrderServiceImpl implements OrderService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    @Transactional
+    public void deleteProduct(String productId) {
+
+        OrderProduct product = customerProductRepository.findByProductOfferId(productId)
+                .orElseThrow(() -> new BusinessException("Product not found with id: " + productId));
+        if (!product.getStatus().equals("Active")) {
+            throw new BusinessException("Only active products can be deleted.");
+        }
+        customerProductRepository.deleteById(product.getId());
+    }
+
+
+
+
     // TODO: Bu alanda basketservice tarafına istek atılıp sepetteki veriyi sişariş tarafına göndermek
         // => basketServiceClient.getByBillingAccoubtId(billingAccountId)
 

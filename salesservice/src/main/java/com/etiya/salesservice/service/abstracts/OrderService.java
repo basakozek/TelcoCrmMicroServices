@@ -9,4 +9,6 @@ public interface OrderService {
     void add(CreateOrderRequest request);
 
     List<BillingAccountProductResponse> getProductsForBillingAccount(int billingAccountId);
+
+    void deleteProduct(String productId);
 }

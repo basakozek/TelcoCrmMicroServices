@@ -155,7 +155,7 @@ public class CustomerSearchServiceImpl implements CustomerSearchService {
         List<Query> mustClauses = new ArrayList<>();
         List<Query> shouldClausesForGsm = new ArrayList<>();
 
-        // --- 1) Basit alanlar (keyword alt alanında, case-insensitive wildcard) ---
+        // 1) Basit/Root alanlar
 
         if (hasText(filters.getNatId())) {
             mustClauses.add(Query.of(q -> q.wildcard(w -> w
@@ -197,7 +197,7 @@ public class CustomerSearchServiceImpl implements CustomerSearchService {
             )));
         }
 
-        // --- 2) Nested alanlar ---
+        //  2) Nested alanlar
 
         // BillingAccounts.accountNumber
         if (hasText(filters.getAccountNumber())) {
@@ -213,7 +213,7 @@ public class CustomerSearchServiceImpl implements CustomerSearchService {
             mustClauses.add(nestedAccount);
         }
 
-        // GSM: hem kök alan (gsmNumber.keyword) hem de contactMediums nested içinde ara (OR/should)
+        // GSM: hem kök alan (gsmNumber.keyword) hem de contactMediums nested içinde ara alan
         if (hasText(filters.getGsmNumber())) {
             String digits = filters.getGsmNumber().replaceAll("\\D+", "").trim();
 
@@ -261,7 +261,7 @@ public class CustomerSearchServiceImpl implements CustomerSearchService {
 
         NativeQuery searchQuery = NativeQuery.builder()
                 .withQuery(finalQuery)
-                .withPageable(PageRequest.of(page, size))   // ← burada parametre
+                .withPageable(PageRequest.of(page, size))
                 .withTrackTotalHits(true)
                 .build();
 

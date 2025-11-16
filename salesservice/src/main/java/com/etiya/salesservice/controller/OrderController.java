@@ -30,4 +30,11 @@ public class OrderController {
     public ResponseEntity<List<BillingAccountProductResponse>> getProductsForBillingAccount(@PathVariable int billingAccountId) {
         return ResponseEntity.ok(this.orderService.getProductsForBillingAccount(billingAccountId));
     }
+
+    @DeleteMapping("/products/{productId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteProduct(@PathVariable String productId) {
+        orderService.deleteProduct(productId);
+    }
+
 }
