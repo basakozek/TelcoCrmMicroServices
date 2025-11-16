@@ -31,8 +31,6 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public void register(RegisterUserRequest request) {
         userService.add(request);
-
-        //Register işlemi için business kuralları tanımlayın
     }
 
     @Override
@@ -40,7 +38,8 @@ public class AuthServiceImpl implements AuthService {
         Authentication authentication = authenticationManager.authenticate
                 (new UsernamePasswordAuthenticationToken(request.getEmail(),request.getPassword()));
         if(!authentication.isAuthenticated())
-            throw new RuntimeException("E posta veya şifre hatalı"); //RuntimeEx türü AuthenticationEx olacak.
+            throw new RuntimeException("E posta veya şifre hatalı");
+
         UserDetails user = userService.loadUserByUsername(request.getEmail());
         String tokenString = jwtService.generateToken(user.getUsername(), user.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList());
         LoginResponse loginResponse = new LoginResponse();

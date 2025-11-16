@@ -3,7 +3,6 @@ package com.etiya.authservice.service.dtos;
 public class RegisterUserRequest {
     private String firstName;
     private String lastName;
-    // Email ve password için regex ekleyin.
     private String email;
     private String password;
 

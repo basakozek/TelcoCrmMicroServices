@@ -15,7 +15,6 @@ public class Role extends BaseEntity implements GrantedAuthority {
     @Column(name = "id")
     private UUID id;
 
-
     @Column(name = "name")
     private String name;
 

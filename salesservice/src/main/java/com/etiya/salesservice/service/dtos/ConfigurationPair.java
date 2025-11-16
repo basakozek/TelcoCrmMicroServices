@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-// 3. ADIM: Key-Value çifti
+//ADIM: Key-Value çifti
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
