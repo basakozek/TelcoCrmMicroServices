@@ -136,7 +136,21 @@ public class OrderServiceImpl implements OrderService {
     }
 
 
+    @Override
+    public OrderProductDetailResponse getProductDetails(String productId) {
+        OrderProduct product = customerProductRepository.findById(productId)
+                .orElseThrow(() -> new BusinessException("Product not found with id: " + productId));
 
+        return new OrderProductDetailResponse(
+                product.getId(),
+                product.getProductOfferId(),
+                product.getProductOfferName(),
+                product.getStatus(),
+                product.getBillingAccountId(),
+                product.getAddressId(),
+                product.getConfiguration()
+        );
+    }
 
 
     // TODO: Bu alanda basketservice tarafına istek atılıp sepetteki veriyi sişariş tarafına göndermek

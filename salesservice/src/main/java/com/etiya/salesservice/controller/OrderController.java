@@ -3,6 +3,7 @@ package com.etiya.salesservice.controller;
 import com.etiya.salesservice.service.abstracts.OrderService;
 import com.etiya.salesservice.service.dtos.BillingAccountProductResponse;
 import com.etiya.salesservice.service.dtos.CreateOrderRequest;
+import com.etiya.salesservice.service.dtos.OrderProductDetailResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +36,10 @@ public class OrderController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteProduct(@PathVariable String productId) {
         orderService.deleteProduct(productId);
+    }
+    @GetMapping("/products/{productId}/details")
+    public ResponseEntity<OrderProductDetailResponse> getProductDetails(@PathVariable String productId) {
+        return ResponseEntity.ok(this.orderService.getProductDetails(productId));
     }
 
 }

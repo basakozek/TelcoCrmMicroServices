@@ -9,4 +9,5 @@ import java.util.Optional;
 public interface CustomerProductRepository extends MongoRepository<OrderProduct, String> {
     List<OrderProduct> findByBillingAccountId(int billingAccountId);
     Optional<OrderProduct> findByProductOfferId(String productOfferId);
+
 }
