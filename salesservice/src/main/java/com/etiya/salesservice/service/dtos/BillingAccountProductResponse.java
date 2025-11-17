@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class BillingAccountProductResponse {
+    private String id;
     private String productOfferId;
     private String productOfferName;
     private String status;
