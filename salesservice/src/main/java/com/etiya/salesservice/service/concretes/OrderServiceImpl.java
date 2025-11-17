@@ -113,6 +113,7 @@ public class OrderServiceImpl implements OrderService {
         // 2. DTO mapping
         return products.stream()
                 .map(product -> new BillingAccountProductResponse(
+                        product.getId(),
                         product.getProductOfferId(),
                         product.getProductOfferName(),
                         product.getStatus()
@@ -122,15 +123,18 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public void deleteProduct(String productId) {
+    public void deleteProduct(String orderProductId) {
 
-        OrderProduct product = customerProductRepository.findByProductOfferId(productId)
-                .orElseThrow(() -> new BusinessException("Product not found with id: " + productId));
-        if (!product.getStatus().equals("Active")) {
+        OrderProduct product = customerProductRepository.findById(orderProductId)
+                .orElseThrow(() -> new BusinessException("Product not found with id: " + orderProductId));
+
+        if (!"Active".equals(product.getStatus())) {
             throw new BusinessException("Only active products can be deleted.");
         }
-        customerProductRepository.deleteById(product.getId());
+
+        customerProductRepository.deleteById(orderProductId);
     }
+
 
 
 
