@@ -42,6 +42,10 @@ public interface AddressMapper {
 
     List<GetListAddressResponse> getListAddressResponsesFromAddresses(List<Address> addresses);
 
+    @Mapping(target = "districtName", source = "district.name")
+    @Mapping(target = "cityName", source = "district.city.name")
+    @Mapping(target = "customerId", source = "customer.id")
+    @Mapping(target = "districtId", source = "district.id")
     GetAddressResponse getAddressResponseFromAddress(Address address);
 
     @Mapping(target = "districtName", source = "district.name")
