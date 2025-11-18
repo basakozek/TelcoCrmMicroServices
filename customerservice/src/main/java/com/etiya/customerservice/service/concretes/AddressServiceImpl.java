@@ -1,9 +1,9 @@
 package com.etiya.customerservice.service.concretes;
 
-import com.etiya.common.events.CreateAddressEvent;
-import com.etiya.common.events.DeleteAddressEvent;
-import com.etiya.common.events.SoftDeleteAddressEvent;
-import com.etiya.common.events.UpdateAddressEvent;
+import com.etiya.common.events.address.CreateAddressEvent;
+import com.etiya.common.events.address.DeleteAddressEvent;
+import com.etiya.common.events.address.SoftDeleteAddressEvent;
+import com.etiya.common.events.address.UpdateAddressEvent;
 import com.etiya.customerservice.domain.entities.Address;
 import com.etiya.customerservice.domain.entities.Customer;
 import com.etiya.customerservice.domain.entities.District;
@@ -17,10 +17,10 @@ import com.etiya.customerservice.service.responses.address.GetAddressResponse;
 import com.etiya.customerservice.service.responses.address.GetListAddressResponse;
 import com.etiya.customerservice.service.responses.address.UpdatedAddressResponse;
 import com.etiya.customerservice.service.rules.AddressBusinessRules;
-import com.etiya.customerservice.transport.kafka.producer.customer.CreateAddressProducer;
-import com.etiya.customerservice.transport.kafka.producer.customer.DeleteAddressProducer;
-import com.etiya.customerservice.transport.kafka.producer.customer.SoftDeleteAddressProducer;
-import com.etiya.customerservice.transport.kafka.producer.customer.UpdateAddressProducer;
+import com.etiya.customerservice.transport.kafka.producer.address.CreateAddressProducer;
+import com.etiya.customerservice.transport.kafka.producer.address.DeleteAddressProducer;
+import com.etiya.customerservice.transport.kafka.producer.address.SoftDeleteAddressProducer;
+import com.etiya.customerservice.transport.kafka.producer.address.UpdateAddressProducer;
 import jakarta.persistence.EntityManager;
 import org.springframework.stereotype.Service;
 

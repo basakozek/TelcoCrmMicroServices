@@ -1,6 +1,6 @@
 package com.etiya.salesservice.transport.kafka.producer;
 
-import com.etiya.common.events.ClearBasketEvent;
+import com.etiya.common.events.basket.ClearBasketEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.stream.function.StreamBridge;

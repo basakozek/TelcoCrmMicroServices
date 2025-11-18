@@ -1,13 +1,9 @@
 package com.etiya.customerservice.transport.kafka.producer.customer;
 
-import com.etiya.common.events.CreateCustomerEvent;
+import com.etiya.common.events.customer.CreateCustomerEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.stream.function.StreamBridge;
-import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.support.KafkaHeaders;
-import org.springframework.messaging.Message;
-import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
 
 @Service

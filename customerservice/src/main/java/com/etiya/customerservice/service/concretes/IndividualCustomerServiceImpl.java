@@ -1,10 +1,10 @@
 package com.etiya.customerservice.service.concretes;
 
 import com.etiya.common.crosscuttingconcerns.exceptions.types.BusinessException;
-import com.etiya.common.events.CreateCustomerEvent;
-import com.etiya.common.events.DeleteCustomerEvent;
-import com.etiya.common.events.SoftDeleteCustomerEvent;
-import com.etiya.common.events.UpdateCustomerEvent;
+import com.etiya.common.events.customer.CreateCustomerEvent;
+import com.etiya.common.events.customer.DeleteCustomerEvent;
+import com.etiya.common.events.customer.SoftDeleteCustomerEvent;
+import com.etiya.common.events.customer.UpdateCustomerEvent;
 import com.etiya.customerservice.domain.entities.IndividualCustomer;
 import com.etiya.customerservice.repository.IndividualCustomerRepository;
 import com.etiya.customerservice.service.abstracts.IndividualCustomerService;
@@ -17,13 +17,10 @@ import com.etiya.customerservice.transport.kafka.producer.customer.CreateCustome
 import com.etiya.customerservice.transport.kafka.producer.customer.DeleteCustomerProducer;
 import com.etiya.customerservice.transport.kafka.producer.customer.SoftDeleteCustomerProducer;
 import com.etiya.customerservice.transport.kafka.producer.customer.UpdateCustomerProducer;
-import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 
@@ -89,16 +86,11 @@ public class IndividualCustomerServiceImpl implements IndividualCustomerService 
         IndividualCustomer existingCustomer = individualCustomerRepository.findById(id)
                 .orElseThrow(() -> new BusinessException("Customer not found with id: " + id));
 
-        // Sadece request’te DOLU gelen alanlar existingCustomer’a yazılır;
-        // null olanlar olduğu gibi kalır.
         IndividualCustomerMapper.INSTANCE.updateIndividualCustomerFromRequest(request, existingCustomer);
 
-        // İstersen değişmemesi gereken alanları burada kilitle:
-        // existingCustomer.setNationalId(existingCustomer.getNationalId()); // örnek
 
         IndividualCustomer saved = individualCustomerRepository.save(existingCustomer);
 
-        // Yeni eklenen kısım: Olayı oluştur ve gönder
         UpdateCustomerEvent event =
                 new UpdateCustomerEvent(
                         saved.getId().toString(), // UUID to String
@@ -112,8 +104,7 @@ public class IndividualCustomerServiceImpl implements IndividualCustomerService 
                         saved.getGender());
 
 
-        updateCustomerProducer.produceCustomerUpdated(event); // Producer sınıfında kafka topic ile iletişim kuran metoda yolla
-
+        updateCustomerProducer.produceCustomerUpdated(event);
 
         return IndividualCustomerMapper.INSTANCE.updatedIndividualCustomerResponseFromIndividualCustomer(saved);
     }
@@ -163,8 +154,6 @@ public class IndividualCustomerServiceImpl implements IndividualCustomerService 
     @Override
     public void delete(UUID id) {
         individualCustomerBusinessRules.checkIfCustomerId(id);
-        // !! ÖNEMLİ: Müşteriyi silmeden önce ilişkili başka veriler varsa (aktif fatura hesabı)
-        // bunlarla ilgili business rule'lar eklenmelidir. Şimdilik sadece ID kontrolü yapıyorum.
         IndividualCustomer customerToDelete = individualCustomerRepository.findById(id).get();
 
         DeleteCustomerEvent event = new DeleteCustomerEvent(id.toString());

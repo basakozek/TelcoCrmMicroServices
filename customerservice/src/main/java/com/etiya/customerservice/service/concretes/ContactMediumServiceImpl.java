@@ -1,20 +1,22 @@
 package com.etiya.customerservice.service.concretes;
 
 import com.etiya.common.crosscuttingconcerns.exceptions.types.BusinessException;
-import com.etiya.common.events.*;
+import com.etiya.common.events.contactmedium.CreateContactMediumEvent;
+import com.etiya.common.events.contactmedium.DeleteContactMediumEvent;
+import com.etiya.common.events.contactmedium.SoftDeleteContactMediumEvent;
+import com.etiya.common.events.contactmedium.UpdateContactMediumEvent;
 import com.etiya.customerservice.domain.entities.ContactMedium;
 import com.etiya.customerservice.domain.entities.Customer;
 import com.etiya.customerservice.repository.ContactMediumRepository;
 import com.etiya.customerservice.service.abstracts.ContactMediumService;
 import com.etiya.customerservice.service.mappings.ContactMediumMapper;
-import com.etiya.customerservice.service.messages.Messages;
 import com.etiya.customerservice.service.requests.contactMedium.*;
 import com.etiya.customerservice.service.responses.contactMedium.*;
 import com.etiya.customerservice.service.rules.ContactMediumBusinessRules;
-import com.etiya.customerservice.transport.kafka.producer.customer.CreateContactMediumProducer;
-import com.etiya.customerservice.transport.kafka.producer.customer.DeleteContactMediumProducer;
-import com.etiya.customerservice.transport.kafka.producer.customer.SoftDeleteContactMediumProducer;
-import com.etiya.customerservice.transport.kafka.producer.customer.UpdateContactMediumProducer;
+import com.etiya.customerservice.transport.kafka.producer.contactmedium.CreateContactMediumProducer;
+import com.etiya.customerservice.transport.kafka.producer.contactmedium.DeleteContactMediumProducer;
+import com.etiya.customerservice.transport.kafka.producer.contactmedium.SoftDeleteContactMediumProducer;
+import com.etiya.customerservice.transport.kafka.producer.contactmedium.UpdateContactMediumProducer;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 

@@ -1,7 +1,7 @@
 package com.etiya.salesservice.service.concretes;
 
 import com.etiya.common.crosscuttingconcerns.exceptions.types.BusinessException;
-import com.etiya.common.events.ClearBasketEvent;
+import com.etiya.common.events.basket.ClearBasketEvent;
 import com.etiya.salesservice.client.BasketServiceClient;
 import com.etiya.salesservice.domain.Order;
 import com.etiya.salesservice.domain.OrderItem;

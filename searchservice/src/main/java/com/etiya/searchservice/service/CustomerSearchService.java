@@ -1,6 +1,6 @@
 package com.etiya.searchservice.service;
 
-import com.etiya.common.events.UpdateCustomerEvent;
+import com.etiya.common.events.customer.UpdateCustomerEvent;
 import com.etiya.searchservice.domain.Address;
 import com.etiya.searchservice.domain.BillingAccount;
 import com.etiya.searchservice.domain.ContactMedium;

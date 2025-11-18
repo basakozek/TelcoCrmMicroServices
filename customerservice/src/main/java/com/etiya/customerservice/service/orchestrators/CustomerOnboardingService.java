@@ -1,9 +1,9 @@
 package com.etiya.customerservice.service.orchestrators;
 
 import com.etiya.common.crosscuttingconcerns.exceptions.types.BusinessException;
-import com.etiya.common.events.CreateAddressEvent;
-import com.etiya.common.events.CreateContactMediumEvent;
-import com.etiya.common.events.CreateCustomerEvent;
+import com.etiya.common.events.address.CreateAddressEvent;
+import com.etiya.common.events.contactmedium.CreateContactMediumEvent;
+import com.etiya.common.events.customer.CreateCustomerEvent;
 import com.etiya.customerservice.domain.entities.Address;
 import com.etiya.customerservice.domain.entities.ContactMedium;
 import com.etiya.customerservice.domain.entities.District;
@@ -16,14 +16,13 @@ import com.etiya.customerservice.service.requests.address.CreateAddressItem;
 import com.etiya.customerservice.service.requests.contactMedium.CreateContactMediumItem;
 import com.etiya.customerservice.service.requests.individualCustomer.CreateIndividualCustomerRequest;
 import com.etiya.customerservice.service.responses.CreateFullCustomerResponse;
-import com.etiya.customerservice.transport.kafka.producer.customer.CreateAddressProducer;
-import com.etiya.customerservice.transport.kafka.producer.customer.CreateContactMediumProducer;
+import com.etiya.customerservice.transport.kafka.producer.address.CreateAddressProducer;
+import com.etiya.customerservice.transport.kafka.producer.contactmedium.CreateContactMediumProducer;
 import com.etiya.customerservice.transport.kafka.producer.customer.CreateCustomerProducer;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,8 +52,6 @@ public class CustomerOnboardingService {
     public CreateFullCustomerResponse createFull(CreateFullCustomerRequest req) {
         // 1) Customer
         CreateIndividualCustomerRequest ic = req.getIndividualCustomer();
-        // business rules (unique nationalId vs.)
-        // individualCustomerBusinessRules.checkIfIndividualCustomerExistsByIdentityNumber(ic.getNationalId());
 
         IndividualCustomer customer = new IndividualCustomer();
         customer.setFirstName(ic.getFirstName());

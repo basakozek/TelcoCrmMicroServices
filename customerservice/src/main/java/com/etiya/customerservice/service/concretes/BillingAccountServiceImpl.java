@@ -1,10 +1,10 @@
 package com.etiya.customerservice.service.concretes;
 
 import com.etiya.common.crosscuttingconcerns.exceptions.types.BusinessException;
-import com.etiya.common.events.CreateBillingAccountEvent;
-import com.etiya.common.events.DeleteBillingAccountEvent;
-import com.etiya.common.events.SoftDeleteBillingAccountEvent;
-import com.etiya.common.events.UpdateBillingAccountEvent;
+import com.etiya.common.events.billingaccount.CreateBillingAccountEvent;
+import com.etiya.common.events.billingaccount.DeleteBillingAccountEvent;
+import com.etiya.common.events.billingaccount.SoftDeleteBillingAccountEvent;
+import com.etiya.common.events.billingaccount.UpdateBillingAccountEvent;
 import com.etiya.common.responses.BillingAccountResponse;
 import com.etiya.customerservice.domain.entities.BillingAccount;
 import com.etiya.customerservice.repository.BillingAccountRepository;
@@ -17,14 +17,13 @@ import com.etiya.customerservice.service.responses.billingAccount.GetBillingAcco
 import com.etiya.customerservice.service.responses.billingAccount.GetListBillingAccountResponse;
 import com.etiya.customerservice.service.responses.billingAccount.UpdatedBillingAccountResponse;
 import com.etiya.customerservice.service.rules.BillingAccountBusinessRules;
-import com.etiya.customerservice.transport.kafka.producer.customer.CreateBillingAccountProducer;
-import com.etiya.customerservice.transport.kafka.producer.customer.DeleteBillingAccountProducer;
-import com.etiya.customerservice.transport.kafka.producer.customer.SoftDeleteBillingAccountProducer;
-import com.etiya.customerservice.transport.kafka.producer.customer.UpdateBillingAccountProducer;
+import com.etiya.customerservice.transport.kafka.producer.billingaccount.CreateBillingAccountProducer;
+import com.etiya.customerservice.transport.kafka.producer.billingaccount.DeleteBillingAccountProducer;
+import com.etiya.customerservice.transport.kafka.producer.billingaccount.SoftDeleteBillingAccountProducer;
+import com.etiya.customerservice.transport.kafka.producer.billingaccount.UpdateBillingAccountProducer;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -174,7 +173,6 @@ public class  BillingAccountServiceImpl implements BillingAccountService {
         return billingAccountRepository.findById(id).stream().map(this::mapToResponse).findFirst().orElseThrow(() -> new BusinessException("Billing account not found"));
     }
 
-    // Aşağıdaki metod mapstructla yapılacak
     private BillingAccountResponse mapToResponse(BillingAccount billingAccount) {
         BillingAccountResponse response = new BillingAccountResponse();
         response.setId(billingAccount.getId());

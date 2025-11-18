@@ -1,6 +1,6 @@
 package com.etiya.customerservice.transport.kafka.producer.customer;
 
-import com.etiya.common.events.DeleteCustomerEvent;
+import com.etiya.common.events.customer.DeleteCustomerEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.stream.function.StreamBridge;

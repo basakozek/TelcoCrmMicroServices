@@ -1,7 +1,7 @@
 package com.etiya.basketservice.transport.kafka.consumer;
 
 import com.etiya.basketservice.service.abstracts.BasketService;
-import com.etiya.common.events.ClearBasketEvent;
+import com.etiya.common.events.basket.ClearBasketEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
