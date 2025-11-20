@@ -21,23 +21,7 @@ public class BaseSecurityService {
             "/v2/api-docs",
             "/v3/api-docs",
             "/v3/api-docs/**",
-            "/api/auth/**",
-//            "/api/catalogs/**",
-//            "/api/products/**",
-//            "/api/product-spec/**",
-//            "/api/campaign-products/**",
-//            "/api/product-offers/**",
-//            "/api/campaigns/**"
-            /*
-            "/api/individual-customers/**",
-            "/api/addresses/**",
-            "/api/billing-accounts/**",
-            "/api/cities/**",
-            "/api/contact-mediums/**",
-            "/api/districts/**",
-            "/api/customer-search/**"
-
-             */
+            "/api/auth/**"
     };
 
     public HttpSecurity configureCoreSecurity(HttpSecurity httpSecurity) throws Exception {
@@ -68,11 +52,6 @@ public class BaseSecurityService {
                                     """);
                         })
                 )
-
-                // DİKKAT: Diğer tüm isteklerin kimlik doğrulaması gerektirdiğini
-                // her servisin kendi SecurityConfig'inde belirtmesi daha doğrudur.
-                // Bu satırı buradan kaldırıp, her servisin kendi config'ine ekleyelim.
-                // .anyRequest().authenticated() // <= BU SATIRI SİL
 
 
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
